@@ -2,36 +2,31 @@ import { useState } from "react";
 
 // a proper place to define a component
 const Statistics = ({ good, neutral, bad, all, average, positive }) => {
-  return (
-    // ...
-    <>
-      <div>
-        <strong>good </strong>
-        {good}
-      </div>
-      <div>
-        <strong>neutral </strong>
-        {neutral}
-      </div>
-      <div>
-        <strong>bad </strong>
-        {bad}
-      </div>
-      <div>
-        <strong>all </strong>
-        {all}
-      </div>
-      <div>
-        <strong>average </strong>
-        {average}
-      </div>
-      <div>
-        <strong>positive </strong>
-        {positive}
-      </div>
-    </>
-  );
+  if (all < 1) {
+    return <div>No feedback given</div>;
+  } else {
+    return (
+      // ...
+      <table>
+        <StatisticLine text="good" value={good} />
+        <StatisticLine text="neutral" value={neutral} />
+        <StatisticLine text="bad" value={bad} />
+        <StatisticLine text="all" value={all} />
+        <StatisticLine text="average" value={average} />
+        <StatisticLine text="positive" value={positive} />
+      </table>
+    );
+  }
 };
+
+const StatisticLine = ({ text, value }) => (
+  <tr>
+    <td>
+      <strong>{text} </strong>
+    </td>
+    <td>{value}</td>
+  </tr>
+);
 
 const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
