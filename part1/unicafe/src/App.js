@@ -1,85 +1,74 @@
 import { useState } from "react";
 
+// a proper place to define a component
+const Statistics = ({ good, neutral, bad, all, average, positive }) => {
+  return (
+    // ...
+    <>
+      <div>
+        <strong>good </strong>
+        {good}
+      </div>
+      <div>
+        <strong>neutral </strong>
+        {neutral}
+      </div>
+      <div>
+        <strong>bad </strong>
+        {bad}
+      </div>
+      <div>
+        <strong>all </strong>
+        {all}
+      </div>
+      <div>
+        <strong>average </strong>
+        {average}
+      </div>
+      <div>
+        <strong>positive </strong>
+        {positive}
+      </div>
+    </>
+  );
+};
+
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>{text}</button>
+);
+
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
-  const [all, setAll] = useState(0);
-  const [average, setAverage] = useState(0);
-  const [percentage, setPercentage] = useState(0);
 
-  const goodJob = () => {
-    const updatedGood = good + 1;
-    setGood(updatedGood);
+  const goodJob = () => setGood(good + 1);
+  const neutralJob = () => setNeutral(neutral + 1);
+  const badJob = () => setBad(bad + 1);
 
-    const updatedAll = updatedGood + neutral + bad;
-    setAll(updatedAll);
-
-    const updatedAverage = (updatedGood - bad) / updatedAll;
-    setAverage(updatedAverage);
-
-    const updatedPercentage = (updatedGood / updatedAll) * 100;
-
-    console.log(updatedGood / updatedAll);
-    setPercentage(updatedPercentage);
-  };
-
-  const neutralJob = () => {
-    const updatedNeutral = neutral + 1;
-    setNeutral(updatedNeutral);
-
-    const updatedAll = updatedNeutral + good + bad;
-    setAll(updatedAll);
-
-    const updatedAverage = (good - bad) / updatedAll;
-    setAverage(updatedAverage);
-
-    const updatedPercentage = (good / updatedAll) * 100;
-    setPercentage(updatedPercentage);
-  };
-
-  const badJob = () => {
-    const updatedBad = bad + 1;
-    setBad(updatedBad);
-
-    const updatedAll = updatedBad + neutral + good;
-    setAll(updatedAll);
-
-    const updatedAverage = (good - updatedBad) / updatedAll;
-    setAverage(updatedAverage);
-
-    const updatedPercentage = (good / updatedAll) * 100;
-    setPercentage(updatedPercentage);
-  };
+  const all = good + neutral + bad;
+  const average = (good - bad) / all;
+  const positive = (good / all) * 100 + "%";
 
   return (
     <div>
       <h1>give feedback</h1>
 
-      <button onClick={goodJob}>good</button>
-      <button onClick={neutralJob}>neutral</button>
-      <button onClick={badJob}>bad</button>
+      <Button handleClick={goodJob} text="good" />
+      <Button handleClick={neutralJob} text="neutral" />
+      <Button handleClick={badJob} text="bad" />
 
       <h1>statistics</h1>
-
       <div>
-        <strong>good</strong> {good}
-      </div>
-      <div>
-        <strong>neutral</strong> {neutral}
-      </div>
-      <div>
-        <strong>bad</strong> {bad}
-      </div>
-      <div>
-        <strong>all</strong> {all}
-      </div>
-      <div>
-        <strong>average</strong> {average}
-      </div>
-      <div>
-        <strong>positive</strong> {percentage} %
+        <Statistics
+          good={good}
+          neutral={good}
+          bad={bad}
+          all={all}
+          average={average}
+          positive={positive}
+        />
       </div>
     </div>
   );
