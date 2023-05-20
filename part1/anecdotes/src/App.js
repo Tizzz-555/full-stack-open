@@ -4,6 +4,29 @@ const Button = ({ handleClick, text }) => (
   <button onClick={handleClick}>{text}</button>
 );
 
+const AOD = ({ voted, anecdotes, selected }) => {
+  return (
+    <>
+      <div>{anecdotes[selected]}</div>
+      <p>
+        <em>Has {voted[selected]} votes</em>
+      </p>
+    </>
+  );
+};
+
+const MVA = ({ voted, anecdotes }) => {
+  let i = voted.indexOf(Math.max(...voted));
+  return (
+    <>
+      <div>{anecdotes[i]}</div>
+      <p>
+        <em>Has {voted[i]} votes</em>
+      </p>
+    </>
+  );
+};
+
 const App = () => {
   const anecdotes = [
     "If it hurts, do it more often.",
@@ -17,7 +40,6 @@ const App = () => {
   ];
 
   const [voted, setVoted] = useState(Array(anecdotes.length).fill(0));
-
   const [selected, setSelected] = useState(0);
 
   const randomQuote = () =>
@@ -32,12 +54,11 @@ const App = () => {
   return (
     <>
       <h1>Anecdote of the day</h1>
-      <div>{anecdotes[selected]}</div>
-      <p>
-        <em>Has {voted[selected]} votes</em>
-      </p>
+      <AOD voted={voted} anecdotes={anecdotes} selected={selected}></AOD>
       <Button handleClick={voteQuote} text="vote"></Button>
       <Button handleClick={randomQuote} text="next anecdote"></Button>
+      <h1>Anecdote with most votes</h1>
+      <MVA voted={voted} anecdotes={anecdotes}></MVA>
     </>
   );
 };
