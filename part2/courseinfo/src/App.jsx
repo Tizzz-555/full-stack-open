@@ -10,11 +10,21 @@ const Part = ({ part }) => (
 
 const Content = ({ parts }) => (
 	<>
-		<Part part={parts[0]} />
-		<Part part={parts[1]} />
-		<Part part={parts[2]} />
+		{/* <Part part={parts[0]} /> */}
+		{console.log(parts)}
+		{/* <Part part={parts.map((part)=> {part.})} /> */}
 	</>
 );
+
+const Course = ({ course }) => {
+	// console.log(course);
+	return (
+		<>
+			<Header course={course.name} />
+			<Content parts={course.parts} />
+		</>
+	);
+};
 
 const App = () => {
 	const course = {
