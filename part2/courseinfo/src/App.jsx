@@ -10,9 +10,10 @@ const Part = ({ part }) => (
 
 const Content = ({ parts }) => (
 	<>
-		{/* <Part part={parts[0]} /> */}
-		{console.log(parts)}
-		{/* <Part part={parts.map((part)=> {part.})} /> */}
+		{/* {console.log(parts)} */}
+		{parts.map((part) => (
+			<Part key={part.id} part={part} />
+		))}
 	</>
 );
 
