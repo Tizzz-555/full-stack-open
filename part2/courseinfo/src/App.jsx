@@ -1,6 +1,10 @@
 const Header = ({ course }) => <h1>{course}</h1>;
 
-const Total = ({ sum }) => <p>Number of exercises {sum}</p>;
+const Total = ({ sum }) => (
+	<p>
+		<strong>Number of exercises {sum}</strong>
+	</p>
+);
 
 const Part = ({ part }) => (
 	<p>
@@ -8,14 +12,22 @@ const Part = ({ part }) => (
 	</p>
 );
 
-const Content = ({ parts }) => (
-	<>
-		{/* {console.log(parts)} */}
-		{parts.map((part) => (
-			<Part key={part.id} part={part} />
-		))}
-	</>
-);
+const Content = ({ parts }) => {
+	const total = parts.reduce(
+		(accumulator, currentValue) => accumulator + currentValue.exercises,
+		0
+	);
+
+	return (
+		<>
+			{/* {console.log(parts)} */}
+			{parts.map((part) => (
+				<Part key={part.id} part={part} />
+			))}
+			<Total sum={total} />
+		</>
+	);
+};
 
 const Course = ({ course }) => {
 	// console.log(course);
