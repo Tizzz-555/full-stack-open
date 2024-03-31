@@ -29,7 +29,6 @@ const Content = ({ parts }) => {
 };
 
 const Course = ({ course }) => {
-	console.log(course);
 	return (
 		<>
 			<Header course={course.name} />
