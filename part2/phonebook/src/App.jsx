@@ -8,14 +8,25 @@ const App = () => {
 		setNewName(event.target.value);
 	};
 
+	// const dummy = ["Mattia", "Marco", "davide", "matteo"];
+
 	const addName = (event) => {
 		event.preventDefault();
-		const nameObject = {
-			id: persons.length + 1,
-			name: newName,
-		};
-		setPersons(persons.concat(nameObject));
-		setNewName("");
+		if (
+			persons.every(
+				(currentValue) =>
+					currentValue.name.toLowerCase() !== newName.toLowerCase()
+			)
+		) {
+			const nameObject = {
+				id: persons.length + 1,
+				name: newName,
+			};
+			setPersons(persons.concat(nameObject));
+			setNewName("");
+		} else {
+			alert(`${newName} is already added to phonebook`);
+		}
 	};
 
 	return (
