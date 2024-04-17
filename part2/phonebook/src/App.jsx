@@ -1,5 +1,5 @@
+import "./App.css";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import personService from "./services/persons";
 
 const Filter = ({ newFilter, handleFilter }) => {
@@ -35,8 +35,7 @@ const PersonForm = (props) => {
 	);
 };
 
-const Persons = ({ persons, newFilter }) => {
-	console.log(persons);
+const Persons = ({ persons, newFilter, deleteContact }) => {
 	return (
 		<div>
 			{persons
@@ -45,6 +44,12 @@ const Persons = ({ persons, newFilter }) => {
 					return (
 						<div key={p.id}>
 							{p.name} {p.number}
+							<button
+								onClick={() => deleteContact(p.id)}
+								className="delete-button"
+							>
+								Delete
+							</button>
 						</div>
 					);
 				})}
@@ -88,7 +93,7 @@ const App = () => {
 			const nameObject = {
 				name: newName,
 				number: newNumber,
-				id: persons.length + 1,
+				// id: persons.length + 1,
 			};
 			personService.create(nameObject).then((returnedPerson) => {
 				setPersons(persons.concat(returnedPerson));
@@ -97,6 +102,24 @@ const App = () => {
 			});
 		} else {
 			alert(`${newName} is already added to phonebook`);
+		}
+	};
+
+	const deleteContact = (id) => {
+		const contact = persons.find((p) => p.id === id);
+
+		if (window.confirm(`Delete '${contact.name}'?`)) {
+			personService
+				.deleteRecord(id)
+				.then(() => {
+					setPersons(persons.filter((p) => p.id !== id));
+				})
+				.catch((error) => {
+					console.error("Error deleting person:", error);
+					alert(
+						`Could not delete the contact '${contact.name}'. Please try again.`
+					);
+				});
 		}
 	};
 
@@ -113,7 +136,11 @@ const App = () => {
 				handleNumberInputChange={handleNumberInputChange}
 			/>
 			<h2>Numbers</h2>
-			<Persons persons={persons} newFilter={newFilter} />
+			<Persons
+				persons={persons}
+				newFilter={newFilter}
+				deleteContact={deleteContact}
+			/>
 		</div>
 	);
 };
