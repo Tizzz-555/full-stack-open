@@ -29,7 +29,9 @@ const PersonForm = (props) => {
 				<input value={newNumber} onChange={handleNumberInputChange} required />
 			</div>
 			<div>
-				<button type="submit">add</button>
+				<button className="custom-button" type="submit">
+					add
+				</button>
 			</div>
 		</form>
 	);
@@ -46,7 +48,7 @@ const Persons = ({ persons, newFilter, deleteContact }) => {
 							{p.name} {p.number}
 							<button
 								onClick={() => deleteContact(p.id)}
-								className="delete-button"
+								className="custom-button"
 							>
 								Delete
 							</button>
@@ -84,24 +86,43 @@ const App = () => {
 
 	const addContact = (event) => {
 		event.preventDefault();
-		if (
-			persons.every(
-				(currentValue) =>
-					currentValue.name.toLowerCase() !== newName.toLowerCase()
-			)
-		) {
-			const nameObject = {
-				name: newName,
-				number: newNumber,
-				// id: persons.length + 1,
-			};
+		const nameObject = {
+			name: newName,
+			number: newNumber,
+		};
+		const duplicatedPerson = persons.find(
+			(p) => p.name.toLowerCase() === newName.toLowerCase()
+		);
+
+		console.log(duplicatedPerson);
+		if (!duplicatedPerson) {
 			personService.create(nameObject).then((returnedPerson) => {
 				setPersons(persons.concat(returnedPerson));
 				setNewName("");
 				setNewNumber("");
 			});
 		} else {
-			alert(`${newName} is already added to phonebook`);
+			if (
+				window.confirm(
+					`${newName} is already added to phonebook, replace the old number with new one?`
+				)
+			) {
+				personService
+					.update(duplicatedPerson.id, nameObject)
+					.then((returnedPerson) => {
+						setPersons(
+							persons.map((p) =>
+								p.id !== duplicatedPerson.id ? p : returnedPerson
+							)
+						);
+					})
+					.catch((error) => {
+						alert(
+							`the person '${duplicatedPerson.name}' was already deleted from server`
+						);
+						setPersons(persons.filter((p) => p.id !== id));
+					});
+			}
 		}
 	};
 
