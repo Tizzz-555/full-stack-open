@@ -8,8 +8,9 @@ const PersonForm = (props) => {
 		setNewNumber,
 		persons,
 		setPersons,
-		addedMessage,
-		setAddedMessage,
+		okMessage,
+		setOkMessage,
+		setErrorMessage,
 	} = props;
 
 	const handleNameInputChange = (event) => {
@@ -35,9 +36,9 @@ const PersonForm = (props) => {
 				setPersons(persons.concat(returnedPerson));
 				setNewName("");
 				setNewNumber("");
-				setAddedMessage(`Added ${returnedPerson.name}`);
+				setOkMessage(`Added ${returnedPerson.name}`);
 				setTimeout(() => {
-					setAddedMessage(null);
+					setOkMessage(null);
 				}, 2000);
 			});
 		} else {
@@ -54,12 +55,19 @@ const PersonForm = (props) => {
 								p.id !== duplicatedPerson.id ? p : returnedPerson
 							)
 						);
+						setOkMessage("Contact successfully updated!");
+						setTimeout(() => {
+							setOkMessage(null);
+						}, 2000);
 					})
 					.catch((error) => {
-						alert(
+						setPersons(persons.filter((p) => p.id !== duplicatedPerson.id));
+						setErrorMessage(
 							`the person '${duplicatedPerson.name}' was already deleted from server`
 						);
-						setPersons(persons.filter((p) => p.id !== id));
+						setTimeout(() => {
+							setErrorMessage(null);
+						}, 2000);
 					});
 			}
 		}

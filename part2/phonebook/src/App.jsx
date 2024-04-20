@@ -11,7 +11,8 @@ const App = () => {
 	const [newName, setNewName] = useState("");
 	const [newNumber, setNewNumber] = useState("");
 	const [newFilter, setNewFilter] = useState("");
-	const [addedMessage, setAddedMessage] = useState(null);
+	const [okMessage, setOkMessage] = useState(null);
+	const [errorMessage, setErrorMessage] = useState(null);
 
 	const hook = () => {
 		personService.getAll().then((initialPersons) => {
@@ -24,7 +25,7 @@ const App = () => {
 	return (
 		<div>
 			<h2>Phonebook</h2>
-			<Notification message={addedMessage} />
+			<Notification okMessage={okMessage} errorMessage={errorMessage} />
 			<Filter newFilter={newFilter} setNewFilter={setNewFilter} />
 			<h3>Add a new</h3>
 			<PersonForm
@@ -34,14 +35,18 @@ const App = () => {
 				setNewName={setNewName}
 				newNumber={newNumber}
 				setNewNumber={setNewNumber}
-				addedMessage={addedMessage}
-				setAddedMessage={setAddedMessage}
+				okMessage={okMessage}
+				setOkMessage={setOkMessage}
+				errorMessage={errorMessage}
+				setErrorMessage={setErrorMessage}
 			/>
 			<h2>Numbers</h2>
 			<Persons
 				persons={persons}
 				newFilter={newFilter}
 				setPersons={setPersons}
+				setOkMessage={setOkMessage}
+				setErrorMessage={setErrorMessage}
 			/>
 		</div>
 	);

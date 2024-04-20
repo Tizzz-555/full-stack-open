@@ -1,20 +1,33 @@
 import personService from "../services/persons";
 
-const Persons = ({ persons, newFilter, setPersons }) => {
+const Persons = ({
+	persons,
+	newFilter,
+	setPersons,
+	setOkMessage,
+	setErrorMessage,
+}) => {
 	const deleteContact = (id) => {
 		const contact = persons.find((p) => p.id === id);
 
 		if (window.confirm(`Delete '${contact.name}'?`)) {
 			personService
 				.deleteRecord(id)
-				.then(() => {
+				.then((returnedPerson) => {
 					setPersons(persons.filter((p) => p.id !== id));
+					setOkMessage(`Deleted ${returnedPerson.name}`);
+					setTimeout(() => {
+						setOkMessage(null);
+					}, 2000);
 				})
 				.catch((error) => {
 					console.error("Error deleting person:", error);
-					alert(
+					setErrorMessage(
 						`Could not delete the contact '${contact.name}'. Please try again.`
 					);
+					setTimeout(() => {
+						setErrorMessage(null);
+					}, 2000);
 				});
 		}
 	};
