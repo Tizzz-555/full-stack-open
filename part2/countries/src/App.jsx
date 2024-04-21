@@ -1,18 +1,72 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useEffect } from "react";
 import "./App.css";
+import countriesService from "./services/countries";
 
 const App = () => {
-	const [left, setLeft] = useState(0);
-	const [right, setRight] = useState(0);
+	const [value, setValue] = useState("");
+	const [countries, setCountries] = useState([]);
+	const [filteredCountries, setFilteredCountries] = useState([]);
+
+	useEffect(() => {
+		countriesService.getAll().then((allCountries) => {
+			setCountries(allCountries);
+		});
+	}, []);
+
+	const handleChange = (event) => {
+		setValue(event.target.value);
+	};
+
+	useEffect(() => {
+		if (countries.length > 0) {
+			setFilteredCountries(
+				countries
+					.map((c) => ({
+						name: c.name.common,
+						capital: c.capital,
+						area: c.area,
+						languages: c.languages ? Object.values(c.languages) : [],
+						flag: c.flags["svg"],
+					}))
+					.filter((c) => c.name.toLowerCase().includes(value.toLowerCase()))
+			);
+		}
+	}, [value, countries]);
 
 	return (
 		<div>
-			{left}
-			<button onClick={() => setLeft(left + 1)}>left</button>
-			<button onClick={() => setRight(right + 1)}>right</button>
-			{right}
+			find countries{" "}
+			<input
+				placeholder="Insert country"
+				value={value}
+				onChange={handleChange}
+			></input>
+			{value.length === 0 ? null : filteredCountries.length > 10 ? (
+				<div>Too many matches, specify another filter</div>
+			) : filteredCountries.length > 1 && filteredCountries.length <= 10 ? (
+				filteredCountries.map((country, index) => {
+					return <div key={index}>{country.name}</div>;
+				})
+			) : (
+				filteredCountries.length === 1 && (
+					<>
+						<h2>{filteredCountries[0].name}</h2>
+						<p>Capital: {filteredCountries[0].capital}</p>
+						<p>Area: {filteredCountries[0].area}</p>
+						<h4>Languages:</h4>
+						<ul>
+							{filteredCountries[0].languages.map((language, index) => {
+								return <li key={index}>{language}</li>;
+							})}
+						</ul>
+						<img
+							src={filteredCountries[0].flag}
+							width="10%"
+							style={{ border: "1px solid black" }}
+						></img>
+					</>
+				)
+			)}
 		</div>
 	);
 };
