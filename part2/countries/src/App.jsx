@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import "./App.css";
 import countriesService from "./services/countries";
+import CountryData from "./components/CountryData";
 
 const App = () => {
 	const [value, setValue] = useState("");
@@ -18,19 +18,11 @@ const App = () => {
 	};
 
 	useEffect(() => {
-		if (countries.length > 0) {
-			setFilteredCountries(
-				countries
-					.map((c) => ({
-						name: c.name.common,
-						capital: c.capital,
-						area: c.area,
-						languages: c.languages ? Object.values(c.languages) : [],
-						flag: c.flags["svg"],
-					}))
-					.filter((c) => c.name.toLowerCase().includes(value.toLowerCase()))
-			);
-		}
+		setFilteredCountries(
+			countries.filter((c) =>
+				c.name.common.toLowerCase().includes(value.toLowerCase())
+			)
+		);
 	}, [value, countries]);
 
 	return (
@@ -44,27 +36,12 @@ const App = () => {
 			{value.length === 0 ? null : filteredCountries.length > 10 ? (
 				<div>Too many matches, specify another filter</div>
 			) : filteredCountries.length > 1 && filteredCountries.length <= 10 ? (
-				filteredCountries.map((country, index) => {
-					return <div key={index}>{country.name}</div>;
-				})
+				filteredCountries.map((country, index) => (
+					<CountryData key={index} country={country} hasButton={true} />
+				))
 			) : (
 				filteredCountries.length === 1 && (
-					<>
-						<h2>{filteredCountries[0].name}</h2>
-						<p>Capital: {filteredCountries[0].capital}</p>
-						<p>Area: {filteredCountries[0].area}</p>
-						<h4>Languages:</h4>
-						<ul>
-							{filteredCountries[0].languages.map((language, index) => {
-								return <li key={index}>{language}</li>;
-							})}
-						</ul>
-						<img
-							src={filteredCountries[0].flag}
-							width="10%"
-							style={{ border: "1px solid black" }}
-						></img>
-					</>
+					<CountryData country={filteredCountries[0]} hasButton={false} />
 				)
 			)}
 		</div>
