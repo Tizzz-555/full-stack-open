@@ -34,6 +34,7 @@ const CountryData = ({ country, hasButton }) => {
 						width="10%"
 						style={{ border: "1px solid black" }}
 					/>
+					<h2>Weather in {country.capital}</h2>
 				</>
 			)}
 		</div>

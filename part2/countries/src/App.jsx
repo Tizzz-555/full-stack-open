@@ -3,6 +3,7 @@ import countriesService from "./services/countries";
 import CountryData from "./components/CountryData";
 
 const App = () => {
+	const API_KEY = import.meta.env.VITE_API_KEY;
 	const [value, setValue] = useState("");
 	const [countries, setCountries] = useState([]);
 	const [filteredCountries, setFilteredCountries] = useState([]);
