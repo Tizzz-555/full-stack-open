@@ -3,15 +3,19 @@ import countriesService from "./services/countries";
 import CountryData from "./components/CountryData";
 
 const App = () => {
-	const API_KEY = import.meta.env.VITE_API_KEY;
 	const [value, setValue] = useState("");
 	const [countries, setCountries] = useState([]);
 	const [filteredCountries, setFilteredCountries] = useState([]);
 
 	useEffect(() => {
-		countriesService.getAll().then((allCountries) => {
-			setCountries(allCountries);
-		});
+		countriesService
+			.getCountries()
+			.then((allCountries) => {
+				setCountries(allCountries);
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	}, []);
 
 	const handleChange = (event) => {
@@ -38,11 +42,20 @@ const App = () => {
 				<div>Too many matches, specify another filter</div>
 			) : filteredCountries.length > 1 && filteredCountries.length <= 10 ? (
 				filteredCountries.map((country, index) => (
-					<CountryData key={index} country={country} hasButton={true} />
+					<CountryData
+						key={index}
+						country={country}
+						hasButton={true}
+						singleCountry={false}
+					/>
 				))
 			) : (
 				filteredCountries.length === 1 && (
-					<CountryData country={filteredCountries[0]} hasButton={false} />
+					<CountryData
+						country={filteredCountries[0]}
+						hasButton={false}
+						singleCountry={true}
+					/>
 				)
 			)}
 		</div>

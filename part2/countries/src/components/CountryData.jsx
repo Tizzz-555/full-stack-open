@@ -1,12 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../App.css";
+import countriesService from "../services/countries";
 
-const CountryData = ({ country, hasButton }) => {
+const CountryData = ({ country, hasButton, singleCountry }) => {
 	const [isVisible, setIsVisible] = useState(!hasButton);
+	const [weather, setWeather] = useState();
 
 	const handleClick = () => {
 		setIsVisible(!isVisible);
 	};
+
+	useEffect(() => {
+		if (singleCountry) {
+			const lat = country.capitalInfo.latlng[0];
+			const lon = country.capitalInfo.latlng[1];
+
+			countriesService
+				.getWeather(lat, lon)
+				.then((r) => {
+					const celsius = Math.round(r.main.temp - 273);
+					setWeather({
+						temperature: celsius,
+						wind: r.wind.speed,
+						icon: r.weather[0].icon,
+					});
+				})
+				.catch((error) => {
+					console.error(error);
+				});
+		}
+	}, [singleCountry]);
+
 	return (
 		<div>
 			{hasButton && (
@@ -35,6 +59,16 @@ const CountryData = ({ country, hasButton }) => {
 						style={{ border: "1px solid black" }}
 					/>
 					<h2>Weather in {country.capital}</h2>
+					{weather && (
+						<>
+							<p>Temperature: {weather.temperature}° (Celsius)</p>
+							<img
+								src={`https://openweathermap.org/img/wn/${weather.icon}@2x.png`}
+								style={{ background: "deepskyblue" }}
+							/>
+							<p>Wind: {weather.wind} m/s</p>
+						</>
+					)}
 				</>
 			)}
 		</div>
