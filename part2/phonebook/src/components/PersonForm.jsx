@@ -32,7 +32,7 @@ const PersonForm = (props) => {
 		);
 
 		if (!duplicatedPerson) {
-			personService.create(nameObject).then((returnedPerson) => {
+			personService.createRecord(nameObject).then((returnedPerson) => {
 				setPersons(persons.concat(returnedPerson));
 				setNewName("");
 				setNewNumber("");
@@ -48,7 +48,7 @@ const PersonForm = (props) => {
 				)
 			) {
 				personService
-					.update(duplicatedPerson.id, nameObject)
+					.updateRecord(duplicatedPerson.id, nameObject)
 					.then((returnedPerson) => {
 						setPersons(
 							persons.map((p) =>
