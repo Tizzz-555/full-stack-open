@@ -32,15 +32,20 @@ const PersonForm = (props) => {
 		);
 
 		if (!duplicatedPerson) {
-			personService.createRecord(nameObject).then((returnedPerson) => {
-				setPersons(persons.concat(returnedPerson));
-				setNewName("");
-				setNewNumber("");
-				setOkMessage(`Added ${returnedPerson.name}`);
-				setTimeout(() => {
-					setOkMessage(null);
-				}, 2000);
-			});
+			personService
+				.createRecord(nameObject)
+				.then((returnedPerson) => {
+					setPersons(persons.concat(returnedPerson));
+					setNewName("");
+					setNewNumber("");
+					setOkMessage(`Added ${returnedPerson.name}`);
+					setTimeout(() => {
+						setOkMessage(null);
+					}, 2000);
+				})
+				.catch((error) => {
+					setErrorMessage(error.response.data.error);
+				});
 		} else {
 			if (
 				window.confirm(
