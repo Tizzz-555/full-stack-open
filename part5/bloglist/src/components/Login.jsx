@@ -12,6 +12,7 @@ const Login = (props) => {
 				username,
 				password,
 			});
+			window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
 			setUser(user);
 			setUsername("");
 			setPassword("");
