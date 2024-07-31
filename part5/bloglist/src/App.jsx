@@ -50,8 +50,7 @@ const App = () => {
 			setNewAuthor("");
 			setNewUrl("");
 		} catch (e) {
-			console.log(e);
-			setErrorMessage("An error occurred while adding the blog");
+			setErrorMessage(e.response.data.error);
 			setTimeout(() => {
 				setErrorMessage(null);
 			}, 5000);
