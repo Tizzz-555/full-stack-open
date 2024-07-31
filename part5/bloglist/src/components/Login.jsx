@@ -3,7 +3,16 @@ import loginService from "../services/login";
 import blogService from "../services/blogs";
 
 const Login = (props) => {
-	const { user, setUser, username, setUsername, password, setPassword } = props;
+	const {
+		user,
+		setUser,
+		username,
+		setUsername,
+		password,
+		setPassword,
+		setOkMessage,
+		setErrorMessage,
+	} = props;
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -13,13 +22,20 @@ const Login = (props) => {
 				username,
 				password,
 			});
-			blogService.setToken(user.token);
 			window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+			blogService.setToken(user.token);
 			setUser(user);
+			setOkMessage(`User ${username} successfully logged in`);
+			setTimeout(() => {
+				setOkMessage(null);
+			}, 5000);
 			setUsername("");
 			setPassword("");
 		} catch (e) {
-			alert("wrong credentials");
+			setErrorMessage("wrong username or password");
+			setTimeout(() => {
+				setErrorMessage(null);
+			}, 5000);
 		}
 	};
 

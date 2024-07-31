@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Blog from "./components/Blog";
+import Notification from "./components/Notification";
 import Login from "./components/Login";
 import blogService from "./services/blogs";
 
@@ -11,6 +12,8 @@ const App = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState(null);
+	const [errorMessage, setErrorMessage] = useState(null);
+	const [okMessage, setOkMessage] = useState(null);
 
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -25,7 +28,7 @@ const App = () => {
 		blogService.getAll().then((blogs) => setBlogs(blogs));
 	}, []);
 
-	const addBlog = (e) => {
+	const addBlog = async (e) => {
 		e.preventDefault();
 		const blogObject = {
 			title: newTitle,
@@ -33,12 +36,26 @@ const App = () => {
 			url: newUrl,
 		};
 
-		blogService.create(blogObject).then((returnedBlog) => {
+		try {
+			const returnedBlog = await blogService.create(blogObject);
 			setBlogs(blogs.concat(returnedBlog));
+			setOkMessage(
+				`A new blog ${blogObject.title} by ${blogObject.author} added`
+			);
+			setTimeout(() => {
+				setOkMessage(null);
+			}, 5000);
+
 			setNewTitle("");
 			setNewAuthor("");
 			setNewUrl("");
-		});
+		} catch (e) {
+			console.log(e);
+			setErrorMessage("An error occurred while adding the blog");
+			setTimeout(() => {
+				setErrorMessage(null);
+			}, 5000);
+		}
 	};
 
 	const logoutUser = () => {
@@ -50,6 +67,8 @@ const App = () => {
 		return (
 			<>
 				<h2>Log in to application</h2>
+				<Notification errorMessage={errorMessage} />
+
 				<Login
 					username={username}
 					setUsername={setUsername}
@@ -57,6 +76,9 @@ const App = () => {
 					setPassword={setPassword}
 					user={user}
 					setUser={setUser}
+					errorMessage={errorMessage}
+					setOkMessage={setOkMessage}
+					setErrorMessage={setErrorMessage}
 				/>
 			</>
 		);
@@ -65,6 +87,8 @@ const App = () => {
 	return (
 		<div>
 			<h2>Blogs</h2>
+			<Notification okMessage={okMessage} errorMessage={errorMessage} />
+
 			<p>
 				{user.name} logged in
 				<button onClick={logoutUser}>Logout</button>
