@@ -52,6 +52,13 @@ const App = () => {
 		}
 	};
 
+	const addLikeTo = async (blogObject) => {
+		const id = blogObject.id;
+		const updatedBlog = { ...blogObject, likes: blogObject.likes + 1 };
+		const returnedBlog = await blogService.update(id, updatedBlog);
+		setBlogs(blogs.map((blog) => (blog.id !== id ? blog : returnedBlog)));
+	};
+
 	const logoutUser = () => {
 		window.localStorage.removeItem("loggedBlogAppUser");
 		setUser(null);
@@ -90,7 +97,7 @@ const App = () => {
 				<BlogForm createBlog={addBlog} />
 			</Togglable>
 			{blogs.map((blog) => (
-				<Blog key={blog.id} blog={blog} />
+				<Blog key={blog.id} blog={blog} addLike={() => addLikeTo(blog)} />
 			))}
 		</div>
 	);
