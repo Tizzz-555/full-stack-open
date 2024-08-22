@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
 import loginService from "../services/login";
 import blogService from "../services/blogs";
 
 const Login = (props) => {
 	const {
-		user,
 		setUser,
 		username,
 		setUsername,
