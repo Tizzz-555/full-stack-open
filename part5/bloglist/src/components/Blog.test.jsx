@@ -2,7 +2,8 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Blog from "./Blog";
 
-test("renders header, doesn't render details", () => {
+describe("<Blog />", () => {
+	let container;
 	const blog = {
 		title: "Test",
 		author: "Testone",
@@ -15,11 +16,22 @@ test("renders header, doesn't render details", () => {
 		},
 	};
 
-	const { container } = render(<Blog blog={blog} />);
+	beforeEach(() => {
+		container = render(<Blog blog={blog} />).container;
+	});
 
-	const header = container.querySelector("#header");
-	const details = container.querySelector("#details");
+	test("renders header, at start details are not displayed", () => {
+		const details = container.querySelector("#details");
+		const header = container.querySelector("#header");
+		expect(header).toBeDefined();
+		expect(details).toHaveStyle("display: none");
+	});
 
-	expect(header).toBeDefined();
-	expect(details).toHaveStyle("display: none");
+	test("after clicking the button, details are displayed", async () => {
+		const user = userEvent.setup();
+		const button = container.querySelector(".showButton");
+		const details = container.querySelector("#details");
+		await user.click(button);
+		expect(details).not.toHaveStyle("display: none");
+	});
 });
