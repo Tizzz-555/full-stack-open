@@ -16,8 +16,9 @@ describe("<Blog />", () => {
 		},
 	};
 
+	const mockHandler = vi.fn();
 	beforeEach(() => {
-		container = render(<Blog blog={blog} />).container;
+		container = render(<Blog blog={blog} addLike={mockHandler} />).container;
 	});
 
 	test("renders header, at start details are not displayed", () => {
@@ -33,5 +34,12 @@ describe("<Blog />", () => {
 		const details = container.querySelector("#details");
 		await user.click(button);
 		expect(details).not.toHaveStyle("display: none");
+	});
+
+	test("if like button is clicked twice, addLike is called twice", async () => {
+		const user = userEvent.setup();
+		const button = container.querySelector("#likeButton");
+		await user.dblClick(button);
+		expect(mockHandler.mock.calls).toHaveLength(2);
 	});
 });
