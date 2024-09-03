@@ -16,7 +16,7 @@ const Blog = ({ blog, addLike, removeBlog, deletable }) => {
 			<div id="header">
 				{blog.title} {blog.author}
 				<button
-					class="showButton"
+					className="showButton"
 					onClick={() => setDetailsVisible(!detailsVisible)}
 				>
 					{detailsVisible ? "Hide" : "View"}
