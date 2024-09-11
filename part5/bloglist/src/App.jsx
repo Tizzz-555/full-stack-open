@@ -113,6 +113,7 @@ const App = () => {
 					password={password}
 					setPassword={setPassword}
 					user={user}
+					setUser={setUser}
 					errorMessage={errorMessage}
 					setOkMessage={setOkMessage}
 					setErrorMessage={setErrorMessage}
