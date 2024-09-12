@@ -30,7 +30,7 @@ const Login = (props) => {
 			setUsername("");
 			setPassword("");
 		} catch (e) {
-			setErrorMessage("wrong username or password");
+			setErrorMessage("Wrong username or password");
 			setTimeout(() => {
 				setErrorMessage(null);
 			}, 5000);
