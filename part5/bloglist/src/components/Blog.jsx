@@ -14,7 +14,8 @@ const Blog = ({ blog, addLike, removeBlog, deletable }) => {
 	return (
 		<div style={blogStyle}>
 			<div id="header">
-				{blog.title} {blog.author}
+				<div>{blog.title}</div>
+				<div>{blog.author}</div>
 				<button
 					className="showButton"
 					onClick={() => setDetailsVisible(!detailsVisible)}
@@ -22,7 +23,7 @@ const Blog = ({ blog, addLike, removeBlog, deletable }) => {
 					{detailsVisible ? "Hide" : "View"}
 				</button>
 			</div>
-			<div id="details" style={showWhenVisible}>
+			<div data-testid="details" id="details" style={showWhenVisible}>
 				<div>{blog.url}</div>
 				<div>
 					likes: {blog.likes}

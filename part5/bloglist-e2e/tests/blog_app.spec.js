@@ -3,15 +3,15 @@ const { loginWith, createBlog } = require("./helper");
 
 describe("Blog app", () => {
 	beforeEach(async ({ page, request }) => {
-		await request.post("http://localhost:3000/api/testing/reset");
-		await request.post("http://localhost:3000/api/users", {
+		await request.post("/api/testing/reset");
+		await request.post("/api/users", {
 			data: {
 				name: "Matteo",
 				username: "Tiuz",
 				password: "Zanetti",
 			},
 		});
-		await page.goto("http://localhost:5173");
+		await page.goto("/");
 	});
 
 	test("Login form is shown", async ({ page }) => {
@@ -54,6 +54,24 @@ describe("Blog app", () => {
 			await expect(
 				page.getByText("A new blog Tituli by Moufrinho added")
 			).toBeVisible();
+		});
+
+		describe("and a blog exists", () => {
+			beforeEach(async ({ page }) => {
+				await createBlog(page, "Zamorano", "Moratti", "www.maiinb.org");
+				await createBlog(page, "Djorkaeff", "Moratti", "www.zioliga.it");
+				await createBlog(page, "El Principe", " Moufrinho", "www.amala.it");
+			});
+
+			test("a blog can be liked", async ({ page }) => {
+				const secondBlogTitle = await page.getByText("Djorkaeff");
+				const secondBlogElement = await secondBlogTitle.locator("..");
+				const secondBlogDetails = await page.getByTestId("details");
+
+				await secondBlogElement.getByRole("button", { name: "View" }).click();
+				await secondBlogDetails.getByRole("button", { name: "Like" }).click();
+				await expect(secondBlogDetails.getByText("1")).toBeVisible();
+			});
 		});
 	});
 });
