@@ -6,8 +6,8 @@ describe("Blog app", () => {
 		await request.post("/api/testing/reset");
 		await request.post("/api/users", {
 			data: {
-				name: "Matteo",
 				username: "Tiuz",
+				name: "Matteo",
 				password: "Zanetti",
 			},
 		});
@@ -61,16 +61,37 @@ describe("Blog app", () => {
 				await createBlog(page, "Zamorano", "Moratti", "www.maiinb.org");
 				await createBlog(page, "Djorkaeff", "Moratti", "www.zioliga.it");
 				await createBlog(page, "El Principe", " Moufrinho", "www.amala.it");
+				await page.goto("/");
 			});
 
 			test("a blog can be liked", async ({ page }) => {
-				const secondBlogTitle = await page.getByText("Djorkaeff");
-				const secondBlogElement = await secondBlogTitle.locator("..");
-				const secondBlogDetails = await page.getByTestId("details");
+				const secondTitle = await page.getByText("Djorkaeff");
+				const secondFather = await secondTitle.locator("..");
+				await secondFather.getByRole("button", { name: "View" }).click();
 
-				await secondBlogElement.getByRole("button", { name: "View" }).click();
-				await secondBlogDetails.getByRole("button", { name: "Like" }).click();
-				await expect(secondBlogDetails.getByText("1")).toBeVisible();
+				const secondUrl = await page.getByText("www.zioliga.it");
+				const secondUrlFather = await secondUrl.locator("..");
+
+				await expect(secondUrlFather.getByText("0")).toBeVisible();
+				await secondUrlFather.getByRole("button", { name: "Like" }).click();
+				await expect(secondUrlFather.getByText("1")).toBeVisible();
+			});
+
+			test("a blog can be deleted by its author", async ({ page }) => {
+				const firstTitle = await page.getByText("Zamorano");
+				const firstFather = await firstTitle.locator("..");
+				await firstFather.getByRole("button", { name: "View" }).click();
+
+				const firstUrl = await page.getByText("www.maiinb.org");
+				const firstUrlFather = await firstUrl.locator("..");
+				await page.pause();
+				page.on("dialog", (dialog) => dialog.accept());
+				await firstUrlFather
+					.getByRole("button", {
+						name: "Remove blog",
+					})
+					.click();
+				await expect(firstTitle).not.toBeVisible();
 			});
 		});
 	});
