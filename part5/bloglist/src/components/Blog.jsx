@@ -32,7 +32,11 @@ const Blog = ({ blog, addLike, removeBlog, deletable }) => {
 					</button>
 				</div>
 				<div>{blog.user.username}</div>
-				{deletable && <button onClick={removeBlog}>Remove blog</button>}
+				{deletable && (
+					<button className="deleteButton" onClick={removeBlog}>
+						Remove blog
+					</button>
+				)}
 			</div>
 		</div>
 	);

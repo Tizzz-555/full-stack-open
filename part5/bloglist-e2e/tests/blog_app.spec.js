@@ -11,6 +11,13 @@ describe("Blog app", () => {
 				password: "Zanetti",
 			},
 		});
+		await request.post("/api/users", {
+			data: {
+				username: "Tizz",
+				name: "Mattia",
+				password: "Maldini",
+			},
+		});
 		await page.goto("/");
 	});
 
@@ -81,17 +88,35 @@ describe("Blog app", () => {
 				const firstTitle = await page.getByText("Zamorano");
 				const firstFather = await firstTitle.locator("..");
 				await firstFather.getByRole("button", { name: "View" }).click();
-
+				// await page.pause();
 				const firstUrl = await page.getByText("www.maiinb.org");
 				const firstUrlFather = await firstUrl.locator("..");
-				await page.pause();
 				page.on("dialog", (dialog) => dialog.accept());
 				await firstUrlFather
 					.getByRole("button", {
 						name: "Remove blog",
 					})
 					.click();
-				await expect(firstTitle).not.toBeVisible();
+				await expect(page.getByText("Zamorano")).not.toBeVisible();
+			});
+
+			test.only("only the author's blog sees the delete button", async ({
+				page,
+			}) => {
+				await page.getByRole("button", { name: "Logout" }).click();
+				await loginWith(page, "Tizz", "Maldini");
+				await expect(page.getByText("Mattia logged in")).toBeVisible();
+
+				const firstTitle = await page.getByText("Zamorano");
+				const firstFather = await firstTitle.locator("..");
+				await firstFather.getByRole("button", { name: "View" }).click();
+
+				const firstUrl = await page.getByText("www.maiinb.org");
+				const firstUrlFather = await firstUrl.locator("..");
+
+				await expect(
+					firstUrlFather.getByRole("button", { name: "Remove blog" })
+				).not.toBeVisible();
 			});
 		});
 	});
