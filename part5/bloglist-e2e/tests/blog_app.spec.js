@@ -1,5 +1,5 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
-const { loginWith, createBlog } = require("./helper");
+const { loginWith, createBlog, unpackBlog, likeBlog } = require("./helper");
 
 describe("Blog app", () => {
 	beforeEach(async ({ page, request }) => {
@@ -72,27 +72,24 @@ describe("Blog app", () => {
 			});
 
 			test("a blog can be liked", async ({ page }) => {
-				const secondTitle = await page.getByText("Djorkaeff");
-				const secondFather = await secondTitle.locator("..");
-				await secondFather.getByRole("button", { name: "View" }).click();
-
-				const secondUrl = await page.getByText("www.zioliga.it");
-				const secondUrlFather = await secondUrl.locator("..");
-
-				await expect(secondUrlFather.getByText("0")).toBeVisible();
-				await secondUrlFather.getByRole("button", { name: "Like" }).click();
-				await expect(secondUrlFather.getByText("1")).toBeVisible();
+				const secondBlogChild = await unpackBlog(
+					page,
+					"Djorkaeff",
+					"www.zioliga.it"
+				);
+				await expect(secondBlogChild.getByText("0")).toBeVisible();
+				await secondBlogChild.getByRole("button", { name: "Like" }).click();
+				await expect(secondBlogChild.getByText("1")).toBeVisible();
 			});
 
 			test("a blog can be deleted by its author", async ({ page }) => {
-				const firstTitle = await page.getByText("Zamorano");
-				const firstFather = await firstTitle.locator("..");
-				await firstFather.getByRole("button", { name: "View" }).click();
-				// await page.pause();
-				const firstUrl = await page.getByText("www.maiinb.org");
-				const firstUrlFather = await firstUrl.locator("..");
+				const firstBlogChild = await unpackBlog(
+					page,
+					"Zamorano",
+					"www.maiinb.org"
+				);
 				page.on("dialog", (dialog) => dialog.accept());
-				await firstUrlFather
+				await firstBlogChild
 					.getByRole("button", {
 						name: "Remove blog",
 					})
@@ -100,23 +97,52 @@ describe("Blog app", () => {
 				await expect(page.getByText("Zamorano")).not.toBeVisible();
 			});
 
-			test.only("only the author's blog sees the delete button", async ({
+			test("only the author's blog sees the delete button", async ({
 				page,
 			}) => {
 				await page.getByRole("button", { name: "Logout" }).click();
 				await loginWith(page, "Tizz", "Maldini");
 				await expect(page.getByText("Mattia logged in")).toBeVisible();
-
-				const firstTitle = await page.getByText("Zamorano");
-				const firstFather = await firstTitle.locator("..");
-				await firstFather.getByRole("button", { name: "View" }).click();
-
-				const firstUrl = await page.getByText("www.maiinb.org");
-				const firstUrlFather = await firstUrl.locator("..");
+				const firstBlogChild = await unpackBlog(
+					page,
+					"Zamorano",
+					"www.maiinb.org"
+				);
 
 				await expect(
-					firstUrlFather.getByRole("button", { name: "Remove blog" })
+					firstBlogChild.getByRole("button", { name: "Remove blog" })
 				).not.toBeVisible();
+			});
+
+			test.only("the blogs are ordered by likes", async ({ page }) => {
+				await expect(page.getByTestId("header")).toContainText([
+					"Zamorano",
+					"El Principe",
+				]);
+				const firstBlogChild = await unpackBlog(
+					page,
+					"Zamorano",
+					"www.maiinb.org"
+				);
+				const secondBlogChild = await unpackBlog(
+					page,
+					"Djorkaeff",
+					"www.zioliga.it"
+				);
+				const thirdBlogChild = await unpackBlog(
+					page,
+					"El principe",
+					"www.amala.it"
+				);
+
+				await likeBlog(firstBlogChild, 1);
+				await likeBlog(secondBlogChild, 3);
+				await likeBlog(thirdBlogChild, 2);
+
+				await expect(page.getByTestId("header")).toContainText([
+					"Djorkaeff",
+					"Zamorano",
+				]);
 			});
 		});
 	});

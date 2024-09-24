@@ -13,7 +13,7 @@ const Blog = ({ blog, addLike, removeBlog, deletable }) => {
 	const showWhenVisible = { display: detailsVisible ? "" : "none" };
 	return (
 		<div style={blogStyle}>
-			<div id="header">
+			<div data-testid="header" id="header">
 				<div>{blog.title}</div>
 				<div>{blog.author}</div>
 				<button
