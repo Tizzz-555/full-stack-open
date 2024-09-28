@@ -114,7 +114,7 @@ describe("Blog app", () => {
 				).not.toBeVisible();
 			});
 
-			test.only("the blogs are ordered by likes", async ({ page }) => {
+			test("the blogs are ordered by likes", async ({ page }) => {
 				await expect(page.getByTestId("header")).toContainText([
 					"Zamorano",
 					"El Principe",
