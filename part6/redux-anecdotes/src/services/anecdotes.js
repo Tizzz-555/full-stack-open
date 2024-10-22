@@ -13,4 +13,7 @@ const createNew = async (content) => {
 	return response.data;
 };
 
+// const updateAnecdote = async () => {
+
+// }
 export default { getAll, createNew };
