@@ -10,6 +10,8 @@ const AnecdoteForm = () => {
 		event.preventDefault();
 		const content = event.target.anecdote.value;
 		event.target.anecdote.value = "";
+		// first dispatch to update state, we pass it the async action creator "createAnecdote"
+		// we pass the content string to the action creator
 		dispatch(createAnecdote(content));
 		dispatch(createNotification(`you added "${content}"`));
 		setTimeout(() => {
