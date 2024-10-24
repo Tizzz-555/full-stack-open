@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 import { createAnecdote } from "../reducers/anecdoteReducer";
-import { createNotification } from "../reducers/notificationReducer";
-import { removeNotification } from "../reducers/notificationReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
 const AnecdoteForm = () => {
 	const dispatch = useDispatch();
@@ -10,13 +9,8 @@ const AnecdoteForm = () => {
 		event.preventDefault();
 		const content = event.target.anecdote.value;
 		event.target.anecdote.value = "";
-		// first dispatch to update state, we pass it the async action creator "createAnecdote"
-		// we pass the content string to the action creator
 		dispatch(createAnecdote(content));
-		dispatch(createNotification(`you added "${content}"`));
-		setTimeout(() => {
-			dispatch(removeNotification());
-		}, 5000);
+		dispatch(setNotification(`you added "${content}"`, 2));
 	};
 	return (
 		<div>
