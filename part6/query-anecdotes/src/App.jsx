@@ -1,9 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
-import { getAnecdotes } from "./requests";
+import { getAnecdotes, createAnecdote } from "./requests";
 
 const App = () => {
+	// const queryClient = useQueryClient();
+
+	// const addAnecdote = async (event) => {
+	//   event.preventDefault();
+	//   const content = event.target.anecdote.value
+	// }
 	const handleVote = (anecdote) => {
 		console.log("vote");
 	};
