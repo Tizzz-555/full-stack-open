@@ -1,8 +1,6 @@
 import { createContext, useReducer, useContext } from "react";
 
 const notificationReducer = (state, action) => {
-	console.log(state);
-	console.log(action.payload);
 	return action.payload;
 };
 
