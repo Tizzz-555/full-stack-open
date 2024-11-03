@@ -12,8 +12,8 @@ const App = () => {
 			queryClient.invalidateQueries({ queryKey: ["anecdotes"] });
 		},
 	});
+
 	const handleVote = (anecdote) => {
-		console.log(anecdote);
 		updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 });
 	};
 
