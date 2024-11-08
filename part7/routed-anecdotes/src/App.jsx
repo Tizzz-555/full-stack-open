@@ -88,6 +88,8 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
+	const navigate = useNavigate();
+
 	const [content, setContent] = useState("");
 	const [author, setAuthor] = useState("");
 	const [info, setInfo] = useState("");
@@ -100,6 +102,7 @@ const CreateNew = (props) => {
 			info,
 			votes: 0,
 		});
+		navigate("/");
 	};
 
 	return (
@@ -159,6 +162,10 @@ const App = () => {
 	const addNew = (anecdote) => {
 		anecdote.id = Math.round(Math.random() * 10000);
 		setAnecdotes(anecdotes.concat(anecdote));
+		setNotification(`a new anecdote ${anecdote.content} created!`);
+		setTimeout(() => {
+			setNotification("");
+		}, 2000);
 	};
 
 	const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -184,8 +191,9 @@ const App = () => {
 		<div>
 			<h1>Software anecdotes</h1>
 			<Menu />
+			<div>{notification}</div>
+
 			{/* <About /> */}
-			{/* <CreateNew addNew={addNew} /> */}
 			<Routes>
 				<Route
 					path="/anecdotes/:id"
