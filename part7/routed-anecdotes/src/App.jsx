@@ -8,6 +8,7 @@ import {
 	useNavigate,
 	useMatch,
 } from "react-router-dom";
+import { useField } from "./hooks";
 
 const Menu = () => {
 	const padding = {
@@ -89,17 +90,14 @@ const Footer = () => (
 
 const CreateNew = (props) => {
 	const navigate = useNavigate();
-
-	const [content, setContent] = useState("");
-	const [author, setAuthor] = useState("");
-	const [info, setInfo] = useState("");
+	const { addNew, content, author, info } = props;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		props.addNew({
-			content,
-			author,
-			info,
+		addNew({
+			content: content.value,
+			author: author.value,
+			info: info.value,
 			votes: 0,
 		});
 		navigate("/");
@@ -111,27 +109,15 @@ const CreateNew = (props) => {
 			<form onSubmit={handleSubmit}>
 				<div>
 					content
-					<input
-						name="content"
-						value={content}
-						onChange={(e) => setContent(e.target.value)}
-					/>
+					<input {...content} />
 				</div>
 				<div>
 					author
-					<input
-						name="author"
-						value={author}
-						onChange={(e) => setAuthor(e.target.value)}
-					/>
+					<input {...author} />
 				</div>
 				<div>
 					url for more info
-					<input
-						name="info"
-						value={info}
-						onChange={(e) => setInfo(e.target.value)}
-					/>
+					<input {...info} />
 				</div>
 				<button>create</button>
 			</form>
@@ -156,7 +142,9 @@ const App = () => {
 			id: 2,
 		},
 	]);
-
+	const content = useField("text");
+	const author = useField("text");
+	const info = useField("text");
 	const [notification, setNotification] = useState("");
 
 	const addNew = (anecdote) => {
@@ -181,7 +169,7 @@ const App = () => {
 		setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
 	};
 
-	const match = useMatch("anecdotes/:id");
+	const match = useMatch("/anecdotes/:id");
 
 	const anecdote = match
 		? anecdotes.find((a) => a.id === Number(match.params.id))
@@ -200,7 +188,17 @@ const App = () => {
 					element={<Anecdote anecdote={anecdote} />}
 				/>
 				<Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
-				<Route path="/create" element={<CreateNew addNew={addNew} />} />
+				<Route
+					path="/create"
+					element={
+						<CreateNew
+							content={content}
+							author={author}
+							info={info}
+							addNew={addNew}
+						/>
+					}
+				/>
 			</Routes>
 			<Footer />
 		</div>
