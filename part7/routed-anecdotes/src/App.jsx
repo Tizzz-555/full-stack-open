@@ -41,19 +41,20 @@ const Anecdote = ({ anecdote }) => {
 	);
 };
 
-const AnecdoteList = ({ anecdotes }) => (
-	<div>
-		<h2>Anecdotes</h2>
-		<ul>
-			{anecdotes.map((anecdote) => (
-				<li key={anecdote.id}>
-					<Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-				</li>
-			))}
-		</ul>
-	</div>
-);
-
+const AnecdoteList = ({ anecdotes }) => {
+	return (
+		<div>
+			<h2>Anecdotes</h2>
+			<ul>
+				{anecdotes.map((anecdote) => (
+					<li key={anecdote.id}>
+						<Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+};
 const About = () => (
 	<div>
 		<h2>About anecdote app</h2>
@@ -181,7 +182,7 @@ const App = () => {
 		setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
 	};
 
-	const match = useMatch("anecdotes/:id");
+	const match = useMatch("/anecdotes/:id");
 
 	const anecdote = match
 		? anecdotes.find((a) => a.id === Number(match.params.id))
