@@ -41,19 +41,20 @@ const Anecdote = ({ anecdote }) => {
 	);
 };
 
-const AnecdoteList = ({ anecdotes }) => (
-	<div>
-		<h2>Anecdotes</h2>
-		<ul>
-			{anecdotes.map((anecdote) => (
-				<li key={anecdote.id}>
-					<Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
-				</li>
-			))}
-		</ul>
-	</div>
-);
-
+const AnecdoteList = ({ anecdotes }) => {
+	return (
+		<div>
+			<h2>Anecdotes</h2>
+			<ul>
+				{anecdotes.map((anecdote) => (
+					<li key={anecdote.id}>
+						<Link to={`/anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+					</li>
+				))}
+			</ul>
+		</div>
+	);
+};
 const About = () => (
 	<div>
 		<h2>About anecdote app</h2>
@@ -88,6 +89,8 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
+	const navigate = useNavigate();
+
 	const [content, setContent] = useState("");
 	const [author, setAuthor] = useState("");
 	const [info, setInfo] = useState("");
@@ -100,6 +103,7 @@ const CreateNew = (props) => {
 			info,
 			votes: 0,
 		});
+		navigate("/");
 	};
 
 	return (
@@ -159,6 +163,10 @@ const App = () => {
 	const addNew = (anecdote) => {
 		anecdote.id = Math.round(Math.random() * 10000);
 		setAnecdotes(anecdotes.concat(anecdote));
+		setNotification(`a new anecdote ${anecdote.content} created!`);
+		setTimeout(() => {
+			setNotification("");
+		}, 2000);
 	};
 
 	const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
@@ -174,7 +182,7 @@ const App = () => {
 		setAnecdotes(anecdotes.map((a) => (a.id === id ? voted : a)));
 	};
 
-	const match = useMatch("anecdotes/:id");
+	const match = useMatch("/anecdotes/:id");
 
 	const anecdote = match
 		? anecdotes.find((a) => a.id === Number(match.params.id))
@@ -184,8 +192,9 @@ const App = () => {
 		<div>
 			<h1>Software anecdotes</h1>
 			<Menu />
+			<div>{notification}</div>
+
 			{/* <About /> */}
-			{/* <CreateNew addNew={addNew} /> */}
 			<Routes>
 				<Route
 					path="/anecdotes/:id"
