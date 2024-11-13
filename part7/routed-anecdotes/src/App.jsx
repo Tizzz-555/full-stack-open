@@ -91,7 +91,7 @@ const Footer = () => (
 
 const CreateNew = (props) => {
 	const navigate = useNavigate();
-	const { addNew, content, author, info } = props;
+	const { addNew, content, author, info, reset } = props;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -110,7 +110,11 @@ const CreateNew = (props) => {
 			<form onSubmit={handleSubmit}>
 				<div>
 					content
-					<input {...content} />
+					<input
+						type={content.type}
+						value={content.value}
+						onChange={content.onChange}
+					/>
 				</div>
 				<div>
 					author
@@ -120,7 +124,8 @@ const CreateNew = (props) => {
 					url for more info
 					<input {...info} />
 				</div>
-				<button>create</button>
+				<button type="submit">create</button>
+				<button type="reset">reset</button>
 			</form>
 		</div>
 	);
@@ -143,9 +148,12 @@ const App = () => {
 			id: 2,
 		},
 	]);
+
 	const content = useField("text");
 	const author = useField("text");
 	const info = useField("text");
+	const reset = useField("text");
+
 	const [notification, setNotification] = useState("");
 
 	const addNew = (anecdote) => {
@@ -192,12 +200,15 @@ const App = () => {
 				<Route
 					path="/create"
 					element={
-						<CreateNew
-							content={content}
-							author={author}
-							info={info}
-							addNew={addNew}
-						/>
+						<>
+							<CreateNew
+								content={content}
+								author={author}
+								info={info}
+								reset={reset}
+								addNew={addNew}
+							/>
+						</>
 					}
 				/>
 			</Routes>
