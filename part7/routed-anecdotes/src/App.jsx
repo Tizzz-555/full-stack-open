@@ -91,7 +91,7 @@ const Footer = () => (
 
 const CreateNew = (props) => {
 	const navigate = useNavigate();
-	const { addNew, content, author, info, reset } = props;
+	const { addNew, content, author, info } = props;
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -102,6 +102,12 @@ const CreateNew = (props) => {
 			votes: 0,
 		});
 		navigate("/");
+	};
+
+	const resetAll = () => {
+		content.reset();
+		author.reset();
+		info.reset();
 	};
 
 	return (
@@ -118,14 +124,20 @@ const CreateNew = (props) => {
 				</div>
 				<div>
 					author
-					<input {...author} />
+					<input
+						type={author.type}
+						value={author.value}
+						onChange={author.onChange}
+					/>
 				</div>
 				<div>
 					url for more info
 					<input {...info} />
 				</div>
 				<button type="submit">create</button>
-				<button type="reset">reset</button>
+				<button type="reset" onClick={resetAll}>
+					reset
+				</button>
 			</form>
 		</div>
 	);
@@ -152,7 +164,6 @@ const App = () => {
 	const content = useField("text");
 	const author = useField("text");
 	const info = useField("text");
-	const reset = useField("text");
 
 	const [notification, setNotification] = useState("");
 
@@ -205,7 +216,6 @@ const App = () => {
 								content={content}
 								author={author}
 								info={info}
-								reset={reset}
 								addNew={addNew}
 							/>
 						</>

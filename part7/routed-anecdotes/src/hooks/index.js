@@ -6,7 +6,7 @@ export const useField = (type) => {
 		setValue(event.target.value);
 	};
 
-	const onClick = () => {
+	const reset = () => {
 		setValue("");
 	};
 
@@ -14,6 +14,6 @@ export const useField = (type) => {
 		type,
 		value,
 		onChange,
-		onClick,
+		reset,
 	};
 };
