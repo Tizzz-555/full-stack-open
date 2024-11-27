@@ -12,6 +12,7 @@ const notificationSlice = createSlice({
 		},
 	},
 });
+
 export const { createNotification, removeNotification } =
 	notificationSlice.actions;
 
