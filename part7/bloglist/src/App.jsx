@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { setNotification } from "./reducers/notificationReducer";
-
+import { fetchBlogs } from "./reducers/blogReducer";
+import { createSelector } from "@reduxjs/toolkit";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Login from "./components/Login";
@@ -9,10 +10,14 @@ import blogService from "./services/blogs";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 
+const selectSortedBlogs = createSelector([(state) => state.blogs], (blogs) =>
+  [...blogs].sort((a, b) => b.likes - a.likes)
+);
+
 const App = () => {
   const dispatch = useDispatch();
 
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector(selectSortedBlogs);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -28,38 +33,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const fetchBlogs = async () => {
-      const initialBlogs = await blogService.getAll();
-      const sortedBlogs = initialBlogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(sortedBlogs);
-    };
-    fetchBlogs();
+    dispatch(fetchBlogs());
   }, []);
-
-  const addBlog = async (blogObject) => {
-    blogFormRef.current.toggleVisibility();
-    try {
-      const returnedBlog = await blogService.createBlog(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
-      dispatch(
-        setNotification(
-          `A new blog ${blogObject.title} by ${blogObject.author} added`,
-          2,
-          false
-        )
-      );
-    } catch (error) {
-      console.error("Error adding blog:", error);
-      dispatch(
-        setNotification(
-          error?.response?.data?.error ||
-            "An error occurred while adding the blog",
-          2,
-          true
-        )
-      );
-    }
-  };
 
   const addLikeTo = async (blogObject) => {
     const id = blogObject.id;
@@ -130,7 +105,7 @@ const App = () => {
         <button onClick={logoutUser}>Logout</button>
       </p>
       <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-        <BlogForm createABlog={addBlog} />
+        <BlogForm />
       </Togglable>
       {blogs.map((blog) => (
         <Blog

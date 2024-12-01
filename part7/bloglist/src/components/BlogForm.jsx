@@ -1,17 +1,31 @@
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { createBlog } from "../reducers/blogReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
-const BlogForm = ({ createABlog }) => {
-  const [newTitle, setNewTitle] = useState("");
-  const [newAuthor, setNewAuthor] = useState("");
-  const [newUrl, setNewUrl] = useState("");
-
-  const addBlog = (e) => {
+const BlogForm = () => {
+  const dispatch = useDispatch();
+  const addBlog = async (e) => {
     e.preventDefault();
-    createABlog({ title: newTitle, author: newAuthor, url: newUrl });
+    const title = e.target.title.value;
+    const author = e.target.author.value;
+    const url = e.target.url.value;
+    e.target.title.value = "";
+    e.target.author.value = "";
+    e.target.url.value = "";
+    const blog = { title, author, url };
 
-    setNewTitle("");
-    setNewAuthor("");
-    setNewUrl("");
+    const result = await dispatch(createBlog(blog));
+    if (result.success) {
+      dispatch(
+        setNotification(
+          `A new blog ${result.blog.title} by ${result.blog.author} added`,
+          2,
+          false
+        )
+      );
+    } else {
+      dispatch(setNotification(result.error, 2, true));
+    }
   };
 
   return (
@@ -22,8 +36,7 @@ const BlogForm = ({ createABlog }) => {
           Title:{" "}
           <input
             data-testid="title"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
+            name="title"
             id="formTitle"
             placeholder="The post title"
           />
@@ -32,8 +45,7 @@ const BlogForm = ({ createABlog }) => {
           Author:{" "}
           <input
             data-testid="author"
-            value={newAuthor}
-            onChange={(e) => setNewAuthor(e.target.value)}
+            name="author"
             id="formAuthor"
             placeholder="The post author"
           />
@@ -42,8 +54,7 @@ const BlogForm = ({ createABlog }) => {
           Url:{" "}
           <input
             data-testid="url"
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)}
+            name="url"
             id="formUrl"
             placeholder="The post link"
           />
