@@ -20,11 +20,11 @@ const BlogForm = () => {
         setNotification(
           `A new blog ${result.blog.title} by ${result.blog.author} added`,
           2,
-          false
+          true
         )
       );
     } else {
-      dispatch(setNotification(result.error, 2, true));
+      dispatch(setNotification(result.error, 2, false));
     }
   };
 
