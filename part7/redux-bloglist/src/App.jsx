@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchBlogs } from "./reducers/blogReducer";
 import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
@@ -7,21 +7,20 @@ import Login from "./components/Login";
 import blogService from "./services/blogs";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import { setUser } from "./reducers/userReducer";
 
 const App = () => {
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
   const blogFormRef = useRef();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const storedUser = JSON.parse(loggedUserJSON);
+      dispatch(setUser(storedUser));
+      blogService.setToken(storedUser.token);
     }
   }, []);
 
@@ -31,7 +30,7 @@ const App = () => {
 
   const logoutUser = () => {
     window.localStorage.removeItem("loggedBlogAppUser");
-    setUser(null);
+    dispatch(setUser(null));
   };
 
   if (user === null) {
@@ -39,15 +38,7 @@ const App = () => {
       <>
         <h2>Log in to application</h2>
         <Notification />
-
-        <Login
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          user={user}
-          setUser={setUser}
-        />
+        <Login />
       </>
     );
   }

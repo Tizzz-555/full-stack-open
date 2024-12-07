@@ -1,39 +1,26 @@
-import loginService from "../services/login";
 import blogService from "../services/blogs";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
+import { validateUser } from "../reducers/userReducer";
 
-const Login = (props) => {
+const Login = () => {
   const dispatch = useDispatch();
-  const {
-    setUser,
-    username,
-    setUsername,
-    password,
-    setPassword,
-    setOkMessage,
-    setErrorMessage,
-  } = props;
 
   const handleLogin = async (event) => {
     event.preventDefault();
+    const username = event.target.username.value;
+    const password = event.target.password.value;
+    const loggedUser = await dispatch(validateUser({ username, password }));
 
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
-      dispatch(
-        setNotification(`User ${username} successfully logged in`, 2, false)
+    if (loggedUser.success) {
+      window.localStorage.setItem(
+        "loggedBlogAppUser",
+        JSON.stringify(loggedUser.user)
       );
-
-      setUsername("");
-      setPassword("");
-    } catch (e) {
-      dispatch(setNotification("Wrong username or password", 2, true));
+      blogService.setToken(loggedUser.user.token);
+      dispatch(
+        setNotification(`User ${username} successfully logged in`, 2, true)
+      );
     }
   };
 
@@ -41,23 +28,11 @@ const Login = (props) => {
     <form onSubmit={handleLogin}>
       <div>
         username
-        <input
-          data-testid="username"
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <input data-testid="username" type="text" name="username" />
       </div>
       <div>
         password
-        <input
-          data-testid="password"
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
+        <input data-testid="password" type="password" name="password" />
       </div>
       <button type="submit">login</button>
     </form>
