@@ -14,6 +14,7 @@ const AnecdoteForm = () => {
 			dispatch({ payload: newAnecdote.content });
 		},
 		onError: (anecdoteError) => {
+			console.log(anecdoteError);
 			dispatch({ payload: anecdoteError.response.data.error });
 			console.log(anecdoteError.response.data.error);
 		},

@@ -1,17 +1,47 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import blogService from "../services/blogs";
+import {
+	useNotificationDispatch,
+	setNotification,
+} from "../NotificationContext";
 
-const BlogForm = ({ createABlog }) => {
-	const [newTitle, setNewTitle] = useState("");
-	const [newAuthor, setNewAuthor] = useState("");
-	const [newUrl, setNewUrl] = useState("");
+const BlogForm = () => {
+	const queryClient = useQueryClient();
+	const dispatch = useNotificationDispatch();
 
-	const addBlog = (e) => {
+	const newBlogMutation = useMutation({
+		mutationFn: blogService.createBlog,
+		onSuccess: (newBlog) => {
+			console.log(newBlog);
+			const blogs = queryClient.getQueryData(["blogs"]);
+			queryClient.setQueryData(["blogs"], blogs.concat(newBlog));
+			setNotification(
+				dispatch,
+				`A new blog ${newBlog.title} by ${newBlog.author} added`,
+				true,
+				5
+			);
+		},
+		onError: (blogError) => {
+			const errorMessage =
+				blogError.response?.data?.error ||
+				blogError.message ||
+				"An unknown error occurred";
+			setNotification(dispatch, errorMessage, false, 5);
+		},
+	});
+
+	const addBlog = async (e) => {
 		e.preventDefault();
-		createABlog({ title: newTitle, author: newAuthor, url: newUrl });
+		const title = e.target.title.value;
+		const author = e.target.author.value;
+		const url = e.target.url.value;
+		e.target.title.value = "";
+		e.target.author.value = "";
+		e.target.url.value = "";
+		const blog = { title, author, url };
 
-		setNewTitle("");
-		setNewAuthor("");
-		setNewUrl("");
+		newBlogMutation.mutate(blog);
 	};
 
 	return (
@@ -22,8 +52,7 @@ const BlogForm = ({ createABlog }) => {
 					Title:{" "}
 					<input
 						data-testid="title"
-						value={newTitle}
-						onChange={(e) => setNewTitle(e.target.value)}
+						name="title"
 						id="formTitle"
 						placeholder="The post title"
 					/>
@@ -32,8 +61,7 @@ const BlogForm = ({ createABlog }) => {
 					Author:{" "}
 					<input
 						data-testid="author"
-						value={newAuthor}
-						onChange={(e) => setNewAuthor(e.target.value)}
+						name="author"
 						id="formAuthor"
 						placeholder="The post author"
 					/>
@@ -42,8 +70,7 @@ const BlogForm = ({ createABlog }) => {
 					Url:{" "}
 					<input
 						data-testid="url"
-						value={newUrl}
-						onChange={(e) => setNewUrl(e.target.value)}
+						name="url"
 						id="formUrl"
 						placeholder="The post link"
 					/>

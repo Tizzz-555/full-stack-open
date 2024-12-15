@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Login from "./components/Login";
@@ -13,14 +15,13 @@ import {
 const App = () => {
 	const dispatch = useNotificationDispatch();
 
-	const [blogs, setBlogs] = useState([]);
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [user, setUser] = useState(null);
-	const [errorMessage, setErrorMessage] = useState(null);
 
 	const blogFormRef = useRef();
 
+	// User log in
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
 		if (loggedUserJSON) {
@@ -30,43 +31,28 @@ const App = () => {
 		}
 	}, []);
 
-	useEffect(() => {
-		const fetchBlogs = async () => {
-			const initialBlogs = await blogService.getAll();
-			const sortedBlogs = initialBlogs.sort((a, b) => b.likes - a.likes);
-			setBlogs(sortedBlogs);
-		};
-		fetchBlogs();
-	}, []);
+	const result = useQuery({
+		queryKey: ["blogs"],
+		queryFn: blogService.getAll,
+		refetchOnWindowFocus: false,
+		retry: 1,
+	});
 
-	const addBlog = async (blogObject) => {
-		blogFormRef.current.toggleVisibility();
-		try {
-			const returnedBlog = await blogService.createBlog(blogObject);
-			setBlogs(blogs.concat(returnedBlog));
-			setNotification(
-				dispatch,
-				`A new blog ${blogObject.title} by ${blogObject.author} added`,
-				true,
-				5
-			);
-		} catch (error) {
-			console.error("Error adding blog:", error);
-			setNotification(
-				dispatch,
-				error?.response?.data?.error ||
-					"An error occurred while adding the blog",
-				false,
-				5
-			);
-		}
-	};
+	if (result.isLoading) {
+		return <div>loading data...</div>;
+	}
+
+	if (result.isError) {
+		return <div>blog service not available due to problems in server</div>;
+	}
+
+	const blogs = result.data;
 
 	const addLikeTo = async (blogObject) => {
 		const id = blogObject.id;
 		const updatedBlog = { ...blogObject, likes: blogObject.likes + 1 };
 		const returnedBlog = await blogService.updateBlog(id, updatedBlog);
-		setBlogs(
+		setXblogs(
 			blogs
 				.map((blog) => (blog.id !== id ? blog : returnedBlog))
 				.sort((a, b) => b.likes - a.likes)
@@ -84,7 +70,7 @@ const App = () => {
 		) {
 			try {
 				await blogService.deleteBlog(id);
-				setBlogs(blogs.filter((b) => b.id !== id));
+				setXblogs(blogs.filter((b) => b.id !== id));
 				setNotification(dispatch, `Deleted ${blogToDelete.title}`, true, 5);
 			} catch (error) {
 				console.error("Error deleting the blog:", error);
@@ -131,9 +117,9 @@ const App = () => {
 				<button onClick={logoutUser}>Logout</button>
 			</p>
 			<Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-				<BlogForm createABlog={addBlog} />
+				<BlogForm />
 			</Togglable>
-			{blogs.map((blog) => (
+			{blogs?.map((blog) => (
 				<Blog
 					key={blog.id}
 					blog={blog}
