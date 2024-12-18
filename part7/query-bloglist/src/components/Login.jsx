@@ -30,7 +30,7 @@ const Login = (props) => {
 			setUsername("");
 			setPassword("");
 		} catch (e) {
-			setNotification(dispatch, "Wrong username or password", true, 5);
+			setNotification(dispatch, "Wrong username or password", false, 5);
 		}
 	};
 

@@ -3,7 +3,6 @@ import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import { getAnecdotes, updateAnecdote } from "./requests";
 
-console.log(getAnecdotes);
 const App = () => {
 	const queryClient = useQueryClient();
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import Blog from "./components/Blog";
+import BlogList from "./components/BlogList";
 import Notification from "./components/Notification";
 import Login from "./components/Login";
 import blogService from "./services/blogs";
@@ -31,34 +31,10 @@ const App = () => {
 		}
 	}, []);
 
-	const result = useQuery({
-		queryKey: ["blogs"],
-		queryFn: blogService.getAll,
-		refetchOnWindowFocus: false,
-		retry: 1,
-	});
-
-	if (result.isLoading) {
-		return <div>loading data...</div>;
-	}
-
-	if (result.isError) {
-		return <div>blog service not available due to problems in server</div>;
-	}
-
-	const blogs = result.data;
-
-	const addLikeTo = async (blogObject) => {
-		const id = blogObject.id;
-		const updatedBlog = { ...blogObject, likes: blogObject.likes + 1 };
-		const returnedBlog = await blogService.updateBlog(id, updatedBlog);
-		setXblogs(
-			blogs
-				.map((blog) => (blog.id !== id ? blog : returnedBlog))
-				.sort((a, b) => b.likes - a.likes)
-		);
-		setNotification(dispatch, `you voted "${returnedBlog.title}"`, true, 5);
-	};
+	// useEffect(() => {
+	// 	console.log(username);
+	// 	console.log(password);
+	// }, [username, password]);
 
 	const deleteABlog = async (id) => {
 		const blogToDelete = blogs.find((b) => b.id === id);
@@ -119,15 +95,7 @@ const App = () => {
 			<Togglable buttonLabel="Create new blog" ref={blogFormRef}>
 				<BlogForm />
 			</Togglable>
-			{blogs?.map((blog) => (
-				<Blog
-					key={blog.id}
-					blog={blog}
-					addLike={() => addLikeTo(blog)}
-					removeBlog={() => deleteABlog(blog.id)}
-					deletable={user.username === blog.user.username}
-				/>
-			))}
+			<BlogList user={user} />
 		</div>
 	);
 };
