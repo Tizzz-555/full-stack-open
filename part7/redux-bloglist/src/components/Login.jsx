@@ -21,6 +21,8 @@ const Login = () => {
       dispatch(
         setNotification(`User ${username} successfully logged in`, 2, true)
       );
+    } else {
+      dispatch(setNotification(loggedUser.error, 2, false));
     }
   };
 

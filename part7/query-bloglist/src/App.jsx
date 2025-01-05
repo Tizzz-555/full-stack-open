@@ -7,63 +7,33 @@ import Login from "./components/Login";
 import blogService from "./services/blogs";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
-import {
-	useNotificationDispatch,
-	setNotification,
-} from "./NotificationContext";
+import { useUserDispatch, useUserValue } from "./LoginContext";
 
 const App = () => {
-	const dispatch = useNotificationDispatch();
-
+	const userDispatch = useUserDispatch();
+	const user = useUserValue();
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const [user, setUser] = useState(null);
 
 	const blogFormRef = useRef();
 
-	// User log in
 	useEffect(() => {
 		const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
 		if (loggedUserJSON) {
 			const user = JSON.parse(loggedUserJSON);
-			setUser(user);
+			userDispatch({
+				type: "LOGGED-IN",
+				payload: user,
+			});
 			blogService.setToken(user.token);
 		}
 	}, []);
 
-	// useEffect(() => {
-	// 	console.log(username);
-	// 	console.log(password);
-	// }, [username, password]);
-
-	const deleteABlog = async (id) => {
-		const blogToDelete = blogs.find((b) => b.id === id);
-
-		if (
-			window.confirm(
-				`Remove '${blogToDelete.title}' by ${blogToDelete.author}?`
-			)
-		) {
-			try {
-				await blogService.deleteBlog(id);
-				setXblogs(blogs.filter((b) => b.id !== id));
-				setNotification(dispatch, `Deleted ${blogToDelete.title}`, true, 5);
-			} catch (error) {
-				console.error("Error deleting the blog:", error);
-				setNotification(
-					dispatch,
-					error?.response?.data?.error ||
-						"An error occurred while deleting the blog",
-					false,
-					5
-				);
-			}
-		}
-	};
-
 	const logoutUser = () => {
 		window.localStorage.removeItem("loggedBlogAppUser");
-		setUser(null);
+		userDispatch({
+			type: "LOGGED-OUT",
+		});
 	};
 
 	if (user === null) {
@@ -78,7 +48,6 @@ const App = () => {
 					password={password}
 					setPassword={setPassword}
 					user={user}
-					setUser={setUser}
 				/>
 			</>
 		);

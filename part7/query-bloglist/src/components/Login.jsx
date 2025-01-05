@@ -4,11 +4,13 @@ import {
 	useNotificationDispatch,
 	setNotification,
 } from "../NotificationContext";
+import { useUserDispatch } from "../LoginContext";
 
 const Login = (props) => {
-	const dispatch = useNotificationDispatch();
+	const notificationDispatch = useNotificationDispatch();
+	const userDispatch = useUserDispatch();
 
-	const { setUser, username, setUsername, password, setPassword } = props;
+	const { username, setUsername, password, setPassword } = props;
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
@@ -20,9 +22,14 @@ const Login = (props) => {
 			});
 			window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
 			blogService.setToken(user.token);
-			setUser(user);
+
+			userDispatch({
+				type: "LOGGED-IN",
+				payload: user,
+			});
+
 			setNotification(
-				dispatch,
+				notificationDispatch,
 				`User ${username} successfully logged in`,
 				true,
 				5
@@ -30,7 +37,12 @@ const Login = (props) => {
 			setUsername("");
 			setPassword("");
 		} catch (e) {
-			setNotification(dispatch, "Wrong username or password", false, 5);
+			setNotification(
+				notificationDispatch,
+				"Wrong username or password",
+				false,
+				5
+			);
 		}
 	};
 
@@ -42,7 +54,7 @@ const Login = (props) => {
 					data-testid="username"
 					type="text"
 					value={username}
-					name="Username"
+					name="username"
 					onChange={({ target }) => setUsername(target.value)}
 				/>
 			</div>
@@ -52,7 +64,7 @@ const Login = (props) => {
 					data-testid="password"
 					type="password"
 					value={password}
-					name="Password"
+					name="password"
 					onChange={({ target }) => setPassword(target.value)}
 				/>
 			</div>

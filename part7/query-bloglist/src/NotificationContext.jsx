@@ -37,7 +37,7 @@ export const NotificationContextProvider = (props) => {
 
 export const useNotificationValue = () => {
 	// the useContext function returns the context, an array with the values we saw above
-	const notification = useContext(NotificationContext);
+	const { notification } = useContext(NotificationContext);
 	return notification;
 };
 

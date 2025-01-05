@@ -119,7 +119,7 @@ const BlogList = ({ user }) => {
 		return <div>blog service not available due to problems in server</div>;
 	}
 
-	const blogs = result.data;
+	const blogs = result.data.sort((a, b) => b.likes - a.likes);
 
 	return (
 		<div>

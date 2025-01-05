@@ -14,6 +14,7 @@ const userSlice = createSlice({
 export const { setUser } = userSlice.actions;
 
 export const validateUser = (userCreds) => {
+  // return a function that accepts dispatch (from Redux thunk middleware) so we can dispatch actions
   return async (dispatch) => {
     try {
       const authorizedUser = await loginService.login(userCreds);
