@@ -8,10 +8,21 @@ import blogService from "./services/blogs";
 import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import { setUser } from "./reducers/userReducer";
+import { fetchUsers } from "./reducers/usersListReducer";
+
+import {
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useParams,
+  useNavigate,
+  useMatch,
+} from "react-router-dom";
+import { UsersList } from "./components/UsersList";
 
 const App = () => {
   const dispatch = useDispatch();
-
   const user = useSelector((state) => state.user);
   const blogFormRef = useRef();
 
@@ -26,7 +37,8 @@ const App = () => {
 
   useEffect(() => {
     dispatch(fetchBlogs());
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   const logoutUser = () => {
     window.localStorage.removeItem("loggedBlogAppUser");
@@ -51,10 +63,20 @@ const App = () => {
         {user.name} logged in
         <button onClick={logoutUser}>Logout</button>
       </p>
-      <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-        <BlogForm />
-      </Togglable>
-      <BlogList user={user} />
+      <Routes>
+        <Route path="/users" element={<UsersList />} />
+        <Route
+          path="/"
+          element={
+            <>
+              <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
+                <BlogForm />
+              </Togglable>
+              <BlogList user={user} />
+            </>
+          }
+        />
+      </Routes>
     </div>
   );
 };
