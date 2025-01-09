@@ -9,7 +9,8 @@ import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
 import { setUser } from "./reducers/userReducer";
 import { fetchUsers } from "./reducers/usersListReducer";
-
+import UsersList from "./components/UsersList";
+import User from "./components/User";
 import {
   Routes,
   Route,
@@ -19,12 +20,15 @@ import {
   useNavigate,
   useMatch,
 } from "react-router-dom";
-import { UsersList } from "./components/UsersList";
 
 const App = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const users = useSelector((state) => state.usersList);
+  const loggedUser = useSelector((state) => state.user);
   const blogFormRef = useRef();
+
+  const match = useMatch("/users/:id");
+  const user = match ? users.find((u) => u.id === match.params.id) : null;
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
@@ -45,7 +49,7 @@ const App = () => {
     dispatch(setUser(null));
   };
 
-  if (user === null) {
+  if (loggedUser === null) {
     return (
       <>
         <h2>Log in to application</h2>
@@ -60,11 +64,12 @@ const App = () => {
       <h2>Blogs</h2>
       <Notification />
       <p>
-        {user.name} logged in
+        {loggedUser.name} logged in
         <button onClick={logoutUser}>Logout</button>
       </p>
       <Routes>
-        <Route path="/users" element={<UsersList />} />
+        <Route path="/users" element={<UsersList users={users} />} />
+        <Route path="/users/:id" element={<User user={user} />} />
         <Route
           path="/"
           element={
@@ -72,7 +77,7 @@ const App = () => {
               <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
                 <BlogForm />
               </Togglable>
-              <BlogList user={user} />
+              <BlogList user={loggedUser} />
             </>
           }
         />

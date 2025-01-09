@@ -6,8 +6,6 @@ const blogSlice = createSlice({
   initialState: [],
   reducers: {
     setBlogs(state, action) {
-      console.log(state);
-      console.log(action.payload);
       return action.payload;
     },
     appendBlog(state, action) {
@@ -30,7 +28,6 @@ export const { setBlogs, appendBlog, updateBlog, removeBlog } =
 export const fetchBlogs = () => {
   return async (dispatch) => {
     const blogs = await blogService.getAll();
-    console.log(blogs);
     dispatch(setBlogs(blogs));
   };
 };
