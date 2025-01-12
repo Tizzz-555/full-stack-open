@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 
-const User = ({ user }) => {
-  useEffect(() => {}, [user]);
+const UserView = ({ user }) => {
   if (!user) {
     return null;
   }
@@ -19,4 +18,4 @@ const User = ({ user }) => {
   );
 };
 
-export default User;
+export default UserView;

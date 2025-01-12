@@ -1,9 +1,9 @@
 import { useDispatch } from "react-redux";
-import { createBlog } from "../reducers/blogReducer";
+import { createBlog, fetchBlogs } from "../reducers/blogReducer";
 import { setNotification } from "../reducers/notificationReducer";
 
-const BlogForm = () => {
-  const dispatch = useDispatch();
+const BlogForm = ({ dispatch }) => {
+  // const dispatch = useDispatch();
   const addBlog = async (e) => {
     e.preventDefault();
     const title = e.target.title.value;
@@ -23,6 +23,7 @@ const BlogForm = () => {
           true
         )
       );
+      dispatch(fetchBlogs());
     } else {
       dispatch(setNotification(result.error, 2, false));
     }
