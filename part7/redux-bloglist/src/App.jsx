@@ -23,6 +23,7 @@ import {
   useNavigate,
   useMatch,
 } from "react-router-dom";
+import Header from "./components/Header";
 
 const selectSortedBlogs = createSelector([(state) => state.blogs], (blogs) =>
   [...blogs].sort((a, b) => b.likes - a.likes)
@@ -59,11 +60,6 @@ const App = () => {
     dispatch(fetchUsers());
   }, [dispatch]);
 
-  const logoutUser = () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
-    dispatch(setUser(null));
-  };
-
   if (loggedUser === null) {
     return (
       <>
@@ -76,12 +72,8 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blogs</h2>
       <Notification />
-      <p>
-        {loggedUser.name} logged in
-        <button onClick={logoutUser}>Logout</button>
-      </p>
+      <Header user={loggedUser} dispatch={dispatch} setUser={setUser} />
       <Routes>
         <Route path="/users" element={<UsersList users={users} />} />
         <Route path="/users/:id" element={<UserView user={matchedUser} />} />
