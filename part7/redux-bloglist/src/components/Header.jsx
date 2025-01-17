@@ -9,6 +9,8 @@ import {
 } from "react-router-dom";
 
 const Header = ({ user, dispatch, setUser }) => {
+  const navigate = useNavigate();
+
   const header = {
     padding: 10,
     backgroundColor: "lightgray",
@@ -19,6 +21,7 @@ const Header = ({ user, dispatch, setUser }) => {
   const logoutUser = () => {
     window.localStorage.removeItem("loggedBlogAppUser");
     dispatch(setUser(null));
+    navigate("/");
   };
 
   return (

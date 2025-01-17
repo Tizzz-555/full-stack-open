@@ -34,35 +34,26 @@ export const fetchBlogs = () => {
 
 export const createBlog = (content) => {
   return async (dispatch) => {
-    try {
-      const newBlog = await blogService.createNew(content);
-      dispatch(appendBlog(newBlog));
-      return { success: true, blog: newBlog };
-    } catch (error) {
-      return {
-        success: false,
-        error:
-          error?.response?.data?.error ||
-          "An error occurred while adding the blog",
-      };
-    }
+    const newBlog = await blogService.createNew(content);
+    dispatch(appendBlog(newBlog));
   };
 };
 
-export const likeBlog = (content) => {
-  const id = content.id;
-  const likedBlog = {
-    ...content,
-    likes: content.likes + 1,
-  };
+export const likeBlog = (id, content) => {
   return async (dispatch) => {
-    const updatedBlog = await blogService.update(id, likedBlog);
+    const updatedBlog = await blogService.update(id, content);
     dispatch(updateBlog(updatedBlog));
   };
 };
 
-export const deleteBlog = (content) => {
-  const id = content;
+export const commentBlog = (id, content) => {
+  return async (dispatch) => {
+    const updatedBlog = await blogService.addComment(id, content);
+    dispatch(updateBlog(updatedBlog));
+  };
+};
+
+export const deleteBlog = (id) => {
   return async (dispatch) => {
     try {
       await blogService.deleteOne(id);

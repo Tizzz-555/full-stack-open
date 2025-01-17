@@ -40,7 +40,6 @@ const App = () => {
 
   const blogFormRef = useRef();
   const blogs = useSelector(selectSortedBlogs);
-  console.log(blogs);
   const blogMatch = useMatch("/blogs/:id");
   const matchedBlog = blogMatch
     ? blogs.find((b) => b.id === blogMatch.params.id)
@@ -58,6 +57,7 @@ const App = () => {
   useEffect(() => {
     dispatch(fetchBlogs());
     dispatch(fetchUsers());
+    // await blogService.addComment("667fe7216ad13934d66d0147", "Suca");
   }, [dispatch]);
 
   if (loggedUser === null) {

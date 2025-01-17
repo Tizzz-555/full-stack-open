@@ -14,18 +14,25 @@ const BlogForm = ({ dispatch }) => {
     e.target.url.value = "";
     const blog = { title, author, url };
 
-    const result = await dispatch(createBlog(blog));
-    if (result.success) {
+    try {
+      await dispatch(createBlog(blog));
       dispatch(
         setNotification(
-          `A new blog ${result.blog.title} by ${result.blog.author} added`,
+          `A new blog ${blog.title} by ${blog.author} added`,
           2,
           true
         )
       );
       dispatch(fetchBlogs());
-    } else {
-      dispatch(setNotification(result.error, 2, false));
+    } catch (error) {
+      dispatch(
+        setNotification(
+          error?.response?.data?.error ||
+            "An error occurred while adding the blog",
+          2,
+          false
+        )
+      );
     }
   };
 
