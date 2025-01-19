@@ -57,7 +57,6 @@ const App = () => {
   useEffect(() => {
     dispatch(fetchBlogs());
     dispatch(fetchUsers());
-    // await blogService.addComment("667fe7216ad13934d66d0147", "Suca");
   }, [dispatch]);
 
   if (loggedUser === null) {
