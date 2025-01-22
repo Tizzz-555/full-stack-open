@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 const UserView = ({ user }) => {
   if (!user) {
     return null;

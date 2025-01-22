@@ -14,15 +14,7 @@ import { fetchUsers } from "./reducers/usersListReducer";
 import UsersList from "./components/UsersList";
 import UserView from "./components/User";
 import BlogView from "./components/BlogView";
-import {
-  Routes,
-  Route,
-  Link,
-  Navigate,
-  useParams,
-  useNavigate,
-  useMatch,
-} from "react-router-dom";
+import { Routes, Route, useMatch } from "react-router-dom";
 import Header from "./components/Header";
 
 const selectSortedBlogs = createSelector([(state) => state.blogs], (blogs) =>
