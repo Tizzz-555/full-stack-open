@@ -1,25 +1,30 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import { Grid2, Paper } from "@mui/material";
 
 const Blog = ({ blog }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: "#fff",
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+    ...theme.applyStyles("dark", {
+      backgroundColor: "#1A2027",
+    }),
+  }));
 
   return (
-    <div style={blogStyle}>
-      <div data-testid="header" id="header">
+    <Grid2 size={4}>
+      <Item size={4} data-testid="header" id="header">
         <Link to={`/blogs/${blog.id}`}>
           <div>
             {blog.title} - {blog.author}
           </div>
         </Link>
-      </div>
-    </div>
+      </Item>
+    </Grid2>
   );
 };
 
@@ -29,11 +34,11 @@ Blog.propTypes = {
 
 const BlogList = ({ blogs }) => {
   return (
-    <div>
+    <Grid2 container spacing={2}>
       {blogs.map((blog) => {
         return <Blog key={blog.id} blog={blog} />;
       })}
-    </div>
+    </Grid2>
   );
 };
 export default BlogList;

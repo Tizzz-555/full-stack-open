@@ -1,9 +1,14 @@
 import { useDispatch } from "react-redux";
 import { createBlog, fetchBlogs } from "../reducers/blogReducer";
 import { setNotification } from "../reducers/notificationReducer";
+import { Button, TextField, Paper } from "@mui/material";
 
-const BlogForm = ({ dispatch }) => {
-  // const dispatch = useDispatch();
+const BlogForm = ({ dispatch, toggleVisibility }) => {
+  const formLayout = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  };
   const addBlog = async (e) => {
     e.preventDefault();
     const title = e.target.title.value;
@@ -37,38 +42,83 @@ const BlogForm = ({ dispatch }) => {
   };
 
   return (
-    <div>
-      <h2>Create new</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          Title:{" "}
-          <input
-            data-testid="title"
-            name="title"
-            id="formTitle"
-            placeholder="The post title"
-          />
-        </div>
-        <div>
-          Author:{" "}
-          <input
-            data-testid="author"
-            name="author"
-            id="formAuthor"
-            placeholder="The post author"
-          />
-        </div>
-        <div>
-          Url:{" "}
-          <input
-            data-testid="url"
-            name="url"
-            id="formUrl"
-            placeholder="The post link"
-          />
-        </div>
-        <button type="submit">Create</button>
-      </form>
+    <div style={formLayout}>
+      <Paper
+        sx={{
+          maxWidth: 500,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          margin: "20px",
+        }}
+      >
+        <h2>Create new</h2>
+        <form
+          onSubmit={addBlog}
+          style={{
+            display: "flex",
+            flexDirection: "inherit",
+            alignItems: "center",
+            padding: 10,
+            gap: 3,
+          }}
+        >
+          <div>
+            <TextField
+              data-testid="title"
+              name="title"
+              id="formTitle"
+              placeholder="Title"
+              sx={{ margin: 1 }}
+            />
+          </div>
+          <div>
+            <TextField
+              data-testid="author"
+              name="author"
+              id="formAuthor"
+              placeholder="Author"
+              sx={{ margin: 1 }}
+            />
+          </div>
+          <div>
+            <TextField
+              data-testid="url"
+              name="url"
+              id="formUrl"
+              placeholder="Url"
+              sx={{ margin: 1 }}
+            />
+          </div>
+          <div
+            style={{
+              flexDirection: "row",
+              display: "flex",
+              justifyContent: "center",
+              gap: "20px",
+            }}
+          >
+            <Button
+              sx={{
+                width: "40%",
+              }}
+              variant="outlined"
+              onClick={toggleVisibility}
+            >
+              Cancel
+            </Button>
+            <Button
+              sx={{
+                width: "40%",
+              }}
+              variant="contained"
+              type="submit"
+            >
+              Create
+            </Button>
+          </div>
+        </form>
+      </Paper>
     </div>
   );
 };

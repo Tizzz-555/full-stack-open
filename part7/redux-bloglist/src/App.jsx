@@ -81,7 +81,12 @@ const App = () => {
           element={
             <>
               <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-                <BlogForm dispatch={dispatch} />
+                <BlogForm
+                  toggleVisibility={() =>
+                    blogFormRef.current.toggleVisibility()
+                  }
+                  dispatch={dispatch}
+                />
               </Togglable>
               <BlogList user={loggedUser} blogs={blogs} />
             </>

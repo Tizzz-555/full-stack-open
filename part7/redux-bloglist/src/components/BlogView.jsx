@@ -1,9 +1,15 @@
 import { likeBlog, deleteBlog, commentBlog } from "../reducers/blogReducer";
 import { setNotification } from "../reducers/notificationReducer";
 import { useNavigate } from "react-router-dom";
-import blogService from "../services/blogs";
+import { Paper, Divider, Button, TextField } from "@mui/material";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 
 const BlogView = ({ blog, dispatch, deletable }) => {
+  const blogLayout = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  };
   const navigate = useNavigate();
   if (!blog) {
     return null;
@@ -36,37 +42,74 @@ const BlogView = ({ blog, dispatch, deletable }) => {
   };
 
   return (
-    <div>
-      <h2>{blog.title}</h2>
-      <a href={blog.url}>{blog.url}</a>
-      <div>
-        likes: {blog.likes}
-        <button id="likeButton" onClick={like}>
-          Like
-        </button>
-      </div>
-      <div data-testid="details" id="details">
-        <div>added by {blog.user.username}</div>
-        {deletable && (
-          <button className="deleteButton" onClick={remove}>
-            Remove blog
-          </button>
+    <div style={blogLayout}>
+      <Paper
+        sx={{
+          maxWidth: 500,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "20px",
+          padding: "20px",
+          gap: "5px",
+        }}
+      >
+        <div
+          data-testid="details"
+          id="details"
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "7px",
+          }}
+        >
+          <h2>{blog.title}</h2>
+          <a href={blog.url}>{blog.url}</a>
+          <div>
+            likes: {blog.likes}
+            <ThumbUpIcon
+              id="likeButton"
+              onClick={like}
+              style={{
+                width: "0.7em",
+                marginLeft: "5px",
+                position: "relative",
+                top: "1px",
+                cursor: "pointer",
+              }}
+            >
+              Like
+            </ThumbUpIcon>
+          </div>
+          <div>added by {blog.user.username}</div>
+          {deletable && (
+            <Button variant="contained" onClick={remove}>
+              Remove blog
+            </Button>
+          )}
+        </div>
+        <Divider sx={{ width: "100%", margin: "10px" }} />
+        <h2>Comments</h2>
+        <form onSubmit={comment} style={{ display: "flex", gap: "5px" }}>
+          <TextField name="comment" placeholder="add comment"></TextField>
+          <Button variant="contained" style={{ backgroundColor: "lightcoral" }}>
+            Submit
+          </Button>
+        </form>
+        {blog.comments && (
+          <div style={{ width: "100%" }}>
+            <ul>
+              {blog.comments.map((c, index) => (
+                <li key={index}>{c}</li>
+              ))}
+            </ul>
+          </div>
         )}
-      </div>
-      <h2>Comments</h2>
-      <form onSubmit={comment}>
-        <input name="comment" placeholder="add comment"></input>
-        <button>Submit</button>
-      </form>
-      {blog.comments && (
-        // <>
-        <ul>
-          {blog.comments.map((c, index) => (
-            <li key={index}>{c}</li>
-          ))}
-        </ul>
-        // </>
-      )}
+      </Paper>
     </div>
   );
 };
