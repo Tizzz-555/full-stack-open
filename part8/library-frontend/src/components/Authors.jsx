@@ -1,11 +1,8 @@
 import { ALL_AUTHORS } from "../queries";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 
 const Authors = (props) => {
-  if (!props.show) {
-    return null;
-  }
-  const { loading, data } = useQuery(ALL_AUTHORS, {
+  const { loading, error, data } = useQuery(ALL_AUTHORS, {
     pollInterval: 2000,
   });
 
@@ -13,8 +10,15 @@ const Authors = (props) => {
     return <div>loading...</div>;
   }
 
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   const authors = data.allAuthors;
 
+  if (!props.show) {
+    return null;
+  }
   return (
     <div>
       <h2>authors</h2>
