@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ALL_AUTHORS, ADD_BIRTHYEAR } from "../queries";
 import { useMutation, useQuery } from "@apollo/client";
+import Select from "react-select";
 
 const Authors = ({ setError }) => {
 	const [addBirthyear] = useMutation(ADD_BIRTHYEAR, {
@@ -14,6 +15,7 @@ const Authors = ({ setError }) => {
 	const [name, setName] = useState("");
 	const [setBornTo, setSetBornTo] = useState("");
 
+	useEffect(() => {}, [name]);
 	const { loading, error, data } = useQuery(ALL_AUTHORS, {
 		pollInterval: 2000,
 	});
@@ -28,13 +30,19 @@ const Authors = ({ setError }) => {
 		event.preventDefault();
 
 		addBirthyear({ variables: { name, setBornTo } });
-		setName("");
 		setSetBornTo("");
 	};
 
 	if (error) {
 		return <div>Error: {error.message}</div>;
 	}
+
+	const selectOptions = authors.map((a) => {
+		return {
+			value: a.name,
+			label: a.name,
+		};
+	});
 
 	return (
 		<div>
@@ -58,11 +66,10 @@ const Authors = ({ setError }) => {
 			<h2>Set birthyear</h2>
 			<form onSubmit={submit}>
 				<div>
-					name
-					<input
-						value={name}
-						onChange={({ target }) => setName(target.value)}
-					/>
+					<Select
+						options={selectOptions}
+						onChange={({ value }) => setName(value)}
+					></Select>
 				</div>
 				<div>
 					born
