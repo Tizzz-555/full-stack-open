@@ -1,20 +1,24 @@
 import { useState } from "react";
-import {
-	Routes,
-	Route,
-	Link,
-	Navigate,
-	useParams,
-	useNavigate,
-	useMatch,
-} from "react-router-dom";
+import { useApolloClient } from "@apollo/client";
+import { Routes, Route, Link } from "react-router-dom";
 
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
+import LoginForm from "./components/LoginForm";
 
 const App = () => {
+	const [token, setToken] = useState(() =>
+		localStorage.getItem("library-user-token")
+	);
 	const [errorMessage, setErrorMessage] = useState(null);
+	const client = useApolloClient();
+
+	const logout = () => {
+		setToken(null);
+		localStorage.removeItem("library-user-token");
+		client.resetStore();
+	};
 
 	const notify = (message) => {
 		setErrorMessage(message);
@@ -48,14 +52,29 @@ const App = () => {
 				<Link style={buttonStyle} to="/">
 					books
 				</Link>
-				<Link style={buttonStyle} to="/new-book">
-					add book
-				</Link>
+				{token ? (
+					<>
+						<Link style={buttonStyle} to="/new-book">
+							add book
+						</Link>
+						<button style={buttonStyle} onClick={logout}>
+							logout
+						</button>
+					</>
+				) : (
+					<Link style={buttonStyle} to="login">
+						login
+					</Link>
+				)}
 			</div>
 			<Notify errorMessage={errorMessage} />
 			<Routes>
 				<Route path="/authors" element={<Authors setError={notify} />} />
 				<Route path="/" element={<Books />} />
+				<Route
+					path="/login"
+					element={<LoginForm setToken={setToken} setError={notify} />}
+				/>
 				<Route path="/new-book" element={<NewBook setError={notify} />} />
 			</Routes>
 		</div>
