@@ -7,6 +7,16 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 
+export const buttonStyle = {
+	padding: 5,
+	backgroundColor: "#e9e9ed",
+	border: "1px solid darkgrey",
+	textDecoration: "none",
+	color: "black",
+	borderRadius: "5px",
+	marginRight: "5px",
+};
+
 const App = () => {
 	const [token, setToken] = useState(() =>
 		localStorage.getItem("library-user-token")
@@ -34,15 +44,6 @@ const App = () => {
 		return <div style={{ color: "red" }}> {errorMessage} </div>;
 	};
 
-	const buttonStyle = {
-		padding: 5,
-		backgroundColor: "#e9e9ed",
-		border: "1px solid darkgrey",
-		textDecoration: "none",
-		color: "black",
-		borderRadius: "5px",
-		marginRight: "5px",
-	};
 	return (
 		<div>
 			<div>
