@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "../queries";
+import { LOGIN, ME } from "../queries";
 
 const LoginForm = ({ setError, setToken }) => {
 	const [username, setUsername] = useState("");
@@ -9,6 +9,7 @@ const LoginForm = ({ setError, setToken }) => {
 	const navigate = useNavigate();
 
 	const [login, result] = useMutation(LOGIN, {
+		refetchQueries: [{ query: ME }],
 		onError: (error) => {
 			setError(error.graphQLErrors[0].message);
 		},
@@ -19,7 +20,6 @@ const LoginForm = ({ setError, setToken }) => {
 			const token = result.data.login.value;
 			setToken(token);
 			localStorage.setItem("library-user-token", token);
-			console.log(localStorage);
 			navigate("/new-book");
 		}
 	}, [result.data]);

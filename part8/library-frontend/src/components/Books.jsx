@@ -2,17 +2,12 @@ import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries";
 import { buttonStyle } from "../App";
 import { useState } from "react";
-import { useEffect } from "react";
 
 const Books = () => {
 	const [genre, setGenre] = useState(null);
 	const { loading, error, data } = useQuery(ALL_BOOKS, {
 		variables: { genre },
 	});
-
-	useEffect(() => {
-		console.log(genre);
-	}, [genre, setGenre]);
 
 	if (loading) {
 		return <div>loading...</div>;
@@ -32,8 +27,6 @@ const Books = () => {
 		});
 		return acc;
 	}, []);
-
-	// console.log(booksGenres);
 
 	return (
 		<div>
