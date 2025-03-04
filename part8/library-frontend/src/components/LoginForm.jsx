@@ -20,7 +20,7 @@ const LoginForm = ({ setError, setToken }) => {
 			const token = result.data.login.value;
 			setToken(token);
 			localStorage.setItem("library-user-token", token);
-			navigate("/new-book");
+			navigate("/");
 		}
 	}, [result.data]);
 

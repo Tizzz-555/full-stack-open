@@ -4,7 +4,7 @@ import { ALL_BOOKS, ME } from "../queries";
 const Recommended = () => {
 	// Add fetchPolicy to ensure fresh data on each render
 	const { data: userData, loading: userLoading } = useQuery(ME, {
-		fetchPolicy: "no-cache",
+		fetchPolicy: "network-only",
 	});
 
 	const favGenre = userData?.me?.favoriteGenre;
@@ -16,7 +16,7 @@ const Recommended = () => {
 	} = useQuery(ALL_BOOKS, {
 		variables: { genre: favGenre },
 		skip: !favGenre,
-		fetchPolicy: "no-cache", // Force refetch from server
+		fetchPolicy: "network-only", // Force refetch from server
 	});
 
 	const loading = userLoading || booksLoading;

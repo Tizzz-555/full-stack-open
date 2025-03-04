@@ -4,10 +4,20 @@ import { useMutation } from "@apollo/client";
 
 const NewBook = ({ setError }) => {
 	const [createBook] = useMutation(CREATE_BOOK, {
-		refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
 		onError: (error) => {
+			console.error("Mutation error:", error);
 			const messages = error.graphQLErrors.map((e) => e.message).join("\n");
 			setError(messages);
+		},
+		update: (cache, response) => {
+			cache.updateQuery(
+				{ query: ALL_BOOKS, variables: { genre: null } },
+				({ allBooks }) => {
+					return {
+						allBooks: allBooks.concat(response.data.addBook),
+					};
+				}
+			);
 		},
 	});
 
