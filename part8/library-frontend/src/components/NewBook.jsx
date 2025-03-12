@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from "../queries";
 import { useMutation } from "@apollo/client";
+import { updateCache } from "../App";
+import { useNavigate } from "react-router-dom";
 
 const NewBook = ({ setError }) => {
 	const [createBook] = useMutation(CREATE_BOOK, {
@@ -10,17 +12,12 @@ const NewBook = ({ setError }) => {
 			setError(messages);
 		},
 		update: (cache, response) => {
-			cache.updateQuery(
-				{ query: ALL_BOOKS, variables: { genre: null } },
-				({ allBooks }) => {
-					return {
-						allBooks: allBooks.concat(response.data.addBook),
-					};
-				}
-			);
+			updateCache(cache, { query: ALL_BOOKS }, response.data.addBook);
+			navigate("/");
 		},
 	});
 
+	const navigate = useNavigate();
 	const [title, setTitle] = useState("");
 	const [author, setAuthor] = useState("");
 	const [published, setPublished] = useState("");

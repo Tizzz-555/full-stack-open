@@ -11,6 +11,7 @@ const LoginForm = ({ setError, setToken }) => {
 	const [login, result] = useMutation(LOGIN, {
 		refetchQueries: [{ query: ME }],
 		onError: (error) => {
+			console.log(error);
 			setError(error.graphQLErrors[0].message);
 		},
 	});
