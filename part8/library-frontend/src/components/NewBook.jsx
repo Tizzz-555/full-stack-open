@@ -17,6 +17,9 @@ const NewBook = ({ setError }) => {
 				{ query: ALL_BOOKS, variables: { genre: null } },
 				response.data.addBook
 			);
+		},
+		refetchQueries: [{ query: ALL_AUTHORS }],
+		onCompleted: () => {
 			navigate("/");
 		},
 	});

@@ -15,10 +15,7 @@ const Authors = ({ setError }) => {
 	const [name, setName] = useState("");
 	const [setBornTo, setSetBornTo] = useState("");
 
-	useEffect(() => {}, [name]);
-	const { loading, error, data } = useQuery(ALL_AUTHORS, {
-		pollInterval: 2000,
-	});
+	const { loading, error, data } = useQuery(ALL_AUTHORS);
 
 	if (loading) {
 		return <div>loading...</div>;
