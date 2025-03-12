@@ -3,22 +3,7 @@ import { ALL_BOOKS } from "../queries";
 import { buttonStyle } from "../App";
 import { useState } from "react";
 
-const Books = () => {
-	const [genre, setGenre] = useState(null);
-	const { loading, error, data } = useQuery(ALL_BOOKS, {
-		variables: { genre },
-	});
-
-	if (loading) {
-		return <div>loading...</div>;
-	}
-
-	if (error) {
-		return <div>Error: {error.message}</div>;
-	}
-
-	const books = data.allBooks;
-
+const Books = ({ genre, setGenre, books }) => {
 	const booksGenres = books.reduce((acc, book) => {
 		book.genres.forEach((genre) => {
 			if (!acc.includes(genre)) {

@@ -21,15 +21,15 @@ export const buttonStyle = {
 
 export const updateCache = (cache, query, addedBook) => {
 	const uniqByName = (a) => {
-		// console.log(a);
 		let seen = new Set();
 		return a.filter((item) => {
-			let k = item.name;
+			let k = item.title;
 			return seen.has(k) ? false : seen.add(k);
 		});
 	};
 
-	cache.updateQuery(query, ({ allBooks }) => {
+	cache.updateQuery(query, (data) => {
+		const allBooks = data?.allBooks || [];
 		return {
 			allBooks: uniqByName(allBooks.concat(addedBook)),
 		};
@@ -39,21 +39,35 @@ const App = () => {
 	const [token, setToken] = useState(() =>
 		localStorage.getItem("library-user-token")
 	);
+	const [genre, setGenre] = useState(null);
+	const { loading, error, data } = useQuery(ALL_BOOKS, {
+		variables: { genre },
+	});
+
+	const [okMessage, setOkMessage] = useState(null);
 	const [errorMessage, setErrorMessage] = useState(null);
-	const result = useQuery(ALL_BOOKS);
+
 	const client = useApolloClient();
 	const navigate = useNavigate();
 
 	useSubscription(BOOK_ADDED, {
 		onData: ({ data, client }) => {
 			const addedBook = data.data.bookAdded;
-			notify(`${addedBook.title} added`);
-			updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+			notify(`${addedBook.title} added`, true);
+			updateCache(
+				client.cache,
+				{ query: ALL_BOOKS, variables: { genre } },
+				addedBook
+			);
 		},
 	});
 
-	if (result.loading) {
+	if (loading) {
 		return <div>loading...</div>;
+	}
+
+	if (error) {
+		return <div>Error: {error.message}</div>;
 	}
 
 	const logout = () => {
@@ -63,18 +77,50 @@ const App = () => {
 		navigate("/");
 	};
 
-	const notify = (message) => {
+	const notify = (message, status) => {
+		if (status) {
+			setOkMessage(message);
+			setTimeout(() => {
+				setOkMessage(null);
+			}, 2000);
+		}
 		setErrorMessage(message);
 		setTimeout(() => {
 			setErrorMessage(null);
-		}, 10000);
+		}, 2000);
 	};
 
 	const Notify = ({ errorMessage }) => {
-		if (!errorMessage) {
+		if (!okMessage && !errorMessage) {
 			return null;
 		}
-		return <div style={{ color: "red" }}> {errorMessage} </div>;
+		const okStyle = {
+			color: "green",
+			background: "lightgrey",
+			fontSize: "20px",
+			borderStyle: "solid",
+			width: "25%",
+			borderRadius: "5px",
+			padding: "10px",
+			marginBottom: "10px",
+		};
+
+		const errorStyle = {
+			color: "red",
+			background: "lightgrey",
+			fontSize: "20px",
+			borderStyle: "solid",
+			width: "50%",
+			borderRadius: "5px",
+			padding: "10px",
+			marginBottom: "10px",
+		};
+
+		if (okMessage) {
+			return <div style={okStyle}>{okMessage}</div>;
+		} else if (errorMessage) {
+			return <div style={errorStyle}>{errorMessage}</div>;
+		}
 	};
 
 	return (
@@ -104,10 +150,15 @@ const App = () => {
 					</Link>
 				)}
 			</div>
-			<Notify errorMessage={errorMessage} />
+			<Notify errorMessage={errorMessage} okMessage={okMessage} />
 			<Routes>
 				<Route path="/authors" element={<Authors setError={notify} />} />
-				<Route path="/" element={<Books />} />
+				<Route
+					path="/"
+					element={
+						<Books genre={genre} setGenre={setGenre} books={data.allBooks} />
+					}
+				/>
 				<Route
 					path="/login"
 					element={<LoginForm setToken={setToken} setError={notify} />}

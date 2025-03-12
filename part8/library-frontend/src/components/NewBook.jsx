@@ -12,7 +12,11 @@ const NewBook = ({ setError }) => {
 			setError(messages);
 		},
 		update: (cache, response) => {
-			updateCache(cache, { query: ALL_BOOKS }, response.data.addBook);
+			updateCache(
+				cache,
+				{ query: ALL_BOOKS, variables: { genre: null } },
+				response.data.addBook
+			);
 			navigate("/");
 		},
 	});
