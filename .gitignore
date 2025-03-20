@@ -24,3 +24,4 @@ playground
 *.sln
 *.sw?
 .env
+specs.txt
