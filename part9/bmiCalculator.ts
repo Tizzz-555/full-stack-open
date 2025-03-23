@@ -1,4 +1,5 @@
 // Write a function calculateBmi that calculates a BMI based on a given height (in centimeters) and weight (in kilograms) and then returns a message that suits the results.
+import { parseBmiArgs } from "./utils";
 
 const calculateBmi = (h: number, w: number) => {
 	const meterH = h / 100;
@@ -13,6 +14,17 @@ const calculateBmi = (h: number, w: number) => {
 	}
 };
 
-console.log(calculateBmi(180, 74));
+try {
+	const { height, weight } = parseBmiArgs(process.argv);
+	console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+	let errorMessage = "Something bad happened.";
+	if (error instanceof Error) {
+		errorMessage += " Error: " + error.message;
+	}
+	console.log(errorMessage);
+}
+
+// console.log(calculateBmi(180, 74));
 
 // output (Normal range)

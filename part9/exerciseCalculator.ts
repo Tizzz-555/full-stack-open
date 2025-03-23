@@ -1,4 +1,4 @@
-interface evaluationObj {
+export interface evaluationObj {
 	periodLength: number;
 	trainingDays: number;
 	success: boolean;
@@ -8,8 +8,10 @@ interface evaluationObj {
 	average: number;
 }
 
-const calculateExercises = (args: number[], target: number): evaluationObj => {
+import { parseExerciseArgs } from "./utils";
+const calculateExercises = (args: number[]): evaluationObj => {
 	// calculate average time of daily exercise hours
+	const target = args.shift();
 	const trainingDays = args.filter((d) => d > 0);
 	const totalTime = trainingDays.reduce(
 		(acc: number, curr: number) => acc + curr
@@ -40,4 +42,13 @@ const calculateExercises = (args: number[], target: number): evaluationObj => {
 	};
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+	const input = parseExerciseArgs(process.argv);
+	console.log(calculateExercises(input));
+} catch (error: unknown) {
+	let errorMessage = "Something bad happened.";
+	if (error instanceof Error) {
+		errorMessage += " Error: " + error.message;
+	}
+	console.log(errorMessage);
+}
