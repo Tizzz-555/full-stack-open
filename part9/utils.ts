@@ -1,5 +1,3 @@
-import { evaluationObj } from "./exerciseCalculator";
-
 export const parseBmiArgs = (
 	args: string[]
 ): { height: number; weight: number } => {
