@@ -1,4 +1,3 @@
-// Write a function calculateBmi that calculates a BMI based on a given height (in centimeters) and weight (in kilograms) and then returns a message that suits the results.
 import { parseBmiArgs } from "./utils";
 
 export const calculateBmi = (h: number, w: number) => {

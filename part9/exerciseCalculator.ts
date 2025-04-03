@@ -9,9 +9,13 @@ export interface evaluationObj {
 }
 
 import { parseExerciseArgs } from "./utils";
-const calculateExercises = (args: number[]): evaluationObj => {
+
+export const calculateExercises = (args: number[]): evaluationObj => {
 	// calculate average time of daily exercise hours
 	const target = args.shift();
+
+	if (target === undefined) throw new Error("malformatted parameters");
+
 	const trainingDays = args.filter((d) => d > 0);
 	const totalTime = trainingDays.reduce(
 		(acc: number, curr: number) => acc + curr
@@ -42,13 +46,15 @@ const calculateExercises = (args: number[]): evaluationObj => {
 	};
 };
 
-try {
-	const input = parseExerciseArgs(process.argv);
-	console.log(calculateExercises(input));
-} catch (error: unknown) {
-	let errorMessage = "Something bad happened.";
-	if (error instanceof Error) {
-		errorMessage += " Error: " + error.message;
+if (require.main === module) {
+	try {
+		const input = parseExerciseArgs(process.argv);
+		console.log(calculateExercises(input));
+	} catch (error: unknown) {
+		let errorMessage = "Something bad happened.";
+		if (error instanceof Error) {
+			errorMessage += " Error: " + error.message;
+		}
+		console.log(errorMessage);
 	}
-	console.log(errorMessage);
 }
