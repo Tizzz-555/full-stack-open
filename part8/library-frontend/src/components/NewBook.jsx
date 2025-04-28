@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CREATE_BOOK, ALL_BOOKS, ALL_AUTHORS } from "../queries";
 import { useMutation } from "@apollo/client";
 import { updateCache } from "../App";
@@ -69,7 +69,7 @@ const NewBook = ({ setError }) => {
 					published
 					<input
 						type="number"
-						steo="1"
+						step="1"
 						value={published}
 						onChange={({ target }) => setPublished(parseInt(target.value, 10))}
 					/>
