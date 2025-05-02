@@ -50,11 +50,11 @@ function App() {
 				setTimeout(() => {
 					setErrorMessage("");
 				}, 10000);
-				setDate("");
-				setVisibility("");
-				setWeather("");
-				setComment("");
 			});
+		setDate("");
+		setVisibility("");
+		setWeather("");
+		setComment("");
 	};
 
 	return (
@@ -63,24 +63,99 @@ function App() {
 			<Notification okMessage={okMessage} errorMessage={errorMessage} />
 			<form onSubmit={entryCreation}>
 				<div>
-					date:
+					<label htmlFor="date">date:</label>
 					<input
+						id="date"
+						type="date"
 						value={date}
 						onChange={(event) => setDate(event.target.value)}
 					/>
 				</div>
 				<div>
-					visibility:
+					visibility: &nbsp;
+					<label htmlFor="great">great</label>
 					<input
-						value={visibility}
-						onChange={(event) => setVisibility(event.target.value)}
+						id="great"
+						type="radio"
+						name="visibility"
+						value="great"
+						onChange={() => setVisibility("great")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="good">good</label>
+					<input
+						id="good"
+						type="radio"
+						name="visibility"
+						value="good"
+						onChange={() => setVisibility("good")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="ok">ok</label>
+					<input
+						id="ok"
+						type="radio"
+						name="visibility"
+						value="ok"
+						onChange={() => setVisibility("ok")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="poor">poor</label>
+					<input
+						id="poor"
+						type="radio"
+						name="visibility"
+						value="poor"
+						onChange={() => setVisibility("poor")}
+						style={{ marginRight: "10px" }}
 					/>
 				</div>
 				<div>
 					weather:
+					<label htmlFor="sunny">sunny</label>
 					<input
-						value={weather}
-						onChange={(event) => setWeather(event.target.value)}
+						id="sunny"
+						type="radio"
+						name="weather"
+						value="sunny"
+						onChange={() => setWeather("sunny")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="rainy">rainy</label>
+					<input
+						id="rainy"
+						type="radio"
+						name="weather"
+						value="rainy"
+						onChange={() => setWeather("rainy")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="cloudy">cloudy</label>
+					<input
+						id="cloudy"
+						type="radio"
+						name="weather"
+						value="cloudy"
+						onChange={() => setWeather("cloudy")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="stormy">stormy</label>
+					<input
+						id="stormy"
+						type="radio"
+						name="weather"
+						value="stormy"
+						onChange={() => setWeather("stormy")}
+						style={{ marginRight: "10px" }}
+					/>
+					<label htmlFor="windy">windy</label>
+					<input
+						id="windy"
+						type="radio"
+						name="weather"
+						value="windy"
+						onChange={() => setWeather("windy")}
+						style={{ marginRight: "10px" }}
 					/>
 				</div>
 				<div>
