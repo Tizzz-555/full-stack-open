@@ -31,6 +31,21 @@ const PatientDetailPage = () => {
 				</Typography>
 				<Typography sx={{ marginTop: "1em" }}>ssn: {patient?.ssn}</Typography>
 				<Typography>occupation: {patient?.occupation}</Typography>
+				<Typography variant="h5">entries</Typography>
+				{patient?.entries.map((entry) => (
+					<Box key={entry.id} sx={{ margin: "1em 0" }}>
+						<Typography>
+							{entry.date} -{" "}
+							<span style={{ fontStyle: "italic" }}>{entry.description}</span>
+						</Typography>
+						{entry.diagnosisCodes &&
+							entry.diagnosisCodes.map((codes) => (
+								<ul>
+									<li>{codes}</li>
+								</ul>
+							))}
+					</Box>
+				))}
 			</Box>
 		</div>
 	);
