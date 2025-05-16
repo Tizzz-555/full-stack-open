@@ -1,12 +1,17 @@
 import { useEffect } from "react";
 import patientService from "../services/patients";
-import { Patient } from "../types";
+import { Patient, Diagnosis } from "../types";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
-const PatientDetailPage = () => {
+
+interface Props {
+	diagnoses: Diagnosis[];
+}
+
+const PatientDetailPage = ({ diagnoses }: Props) => {
 	const [patient, setPatient] = useState<Patient>();
 	const { id } = useParams<{ id: string }>();
 
@@ -18,6 +23,12 @@ const PatientDetailPage = () => {
 		};
 		void fetchPatient();
 	}, [id]);
+
+	// useEffect(() => {
+	// 	console.log(diagnoses);
+	// 	setDiagnoses(diagnoses);
+	// }, [diagnoses]);
+
 	return (
 		<div>
 			<Box sx={{ margin: "1em 0" }}>
@@ -39,9 +50,15 @@ const PatientDetailPage = () => {
 							<span style={{ fontStyle: "italic" }}>{entry.description}</span>
 						</Typography>
 						{entry.diagnosisCodes &&
-							entry.diagnosisCodes.map((codes) => (
-								<ul>
-									<li>{codes}</li>
+							entry.diagnosisCodes.map((code, index) => (
+								<ul key={index}>
+									<li>
+										{code} -{" "}
+										{
+											diagnoses.find((diagnosis) => diagnosis.code === code)
+												?.name
+										}
+									</li>
 								</ul>
 							))}
 					</Box>
