@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { Typography, Box } from "@mui/material";
 import FemaleIcon from "@mui/icons-material/Female";
 import MaleIcon from "@mui/icons-material/Male";
+import EntryDetails from "./EntryDetails";
 
 interface Props {
 	diagnoses: Diagnosis[];
@@ -24,11 +25,6 @@ const PatientDetailPage = ({ diagnoses }: Props) => {
 		void fetchPatient();
 	}, [id]);
 
-	// useEffect(() => {
-	// 	console.log(diagnoses);
-	// 	setDiagnoses(diagnoses);
-	// }, [diagnoses]);
-
 	return (
 		<div>
 			<Box sx={{ margin: "1em 0" }}>
@@ -44,24 +40,7 @@ const PatientDetailPage = ({ diagnoses }: Props) => {
 				<Typography>occupation: {patient?.occupation}</Typography>
 				<Typography variant="h5">entries</Typography>
 				{patient?.entries.map((entry) => (
-					<Box key={entry.id} sx={{ margin: "1em 0" }}>
-						<Typography>
-							{entry.date} -{" "}
-							<span style={{ fontStyle: "italic" }}>{entry.description}</span>
-						</Typography>
-						{entry.diagnosisCodes &&
-							entry.diagnosisCodes.map((code, index) => (
-								<ul key={index}>
-									<li>
-										{code} -{" "}
-										{
-											diagnoses.find((diagnosis) => diagnosis.code === code)
-												?.name
-										}
-									</li>
-								</ul>
-							))}
-					</Box>
+					<EntryDetails key={entry.id} entry={entry} diagnoses={diagnoses} />
 				))}
 			</Box>
 		</div>
